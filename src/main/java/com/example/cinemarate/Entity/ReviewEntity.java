@@ -1,6 +1,6 @@
 package com.example.cinemarate.Entity;
 
-public class RewiewEntity {
+public class ReviewEntity {
     Long id;
     int rating;
     int userId;

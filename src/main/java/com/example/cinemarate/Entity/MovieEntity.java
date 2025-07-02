@@ -5,14 +5,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
-@Entity
+//@Entity
 @Getter
 @Setter
-
+@NoArgsConstructor
 public class MovieEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +22,16 @@ public class MovieEntity {
     String description;
     int year;
     //TODO create a new table with review per film
-    List<RewiewEntity> rewiews;
+    List<ReviewEntity> reviews;
+
+
+    public MovieEntity(String title, String description, int year, List<ReviewEntity> reviews) {
+        this.title = title;
+        this.description = description;
+        this.year = year;
+        this.reviews = reviews;
+
+    }
 
 
     @Override
@@ -30,7 +40,18 @@ public class MovieEntity {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", year=" + year +
+                ", year=" + year + '\'' +
+                ", rating=" + calculateMeanRating() +
                 '}';
     }
+
+    /** Calculate a mean rating to a film**/
+    private int calculateMeanRating(){
+        int sum  = 0;
+        for(int i =0;i<reviews.size();i++){
+            sum += reviews.get(i).rating;
+        }
+        return sum / reviews.size();
+    }
+
 }
