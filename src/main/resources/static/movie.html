@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Информация о фильме</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .description {
+            margin: 10px 0;
+            color: #555;
+        }
+
+        .year {
+            font-weight: bold;
+            color: #777;
+        }
+
+        .rating {
+            font-size: 18px;
+            color: #ff9800;
+            margin-top: 10px;
+        }
+
+        .reviews {
+            margin-top: 30px;
+        }
+
+        .review {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .review:last-child {
+            border-bottom: none;
+        }
+
+        .review strong {
+            color: #333;
+        }
+
+        .review span {
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 id="title">Загрузка...</h1>
+    <div class="year" id="year"></div>
+    <div class="description" id="description"></div>
+    <div class="rating" id="meanRating"></div>
+    <div class="reviews" id="reviews">
+        <h2>Отзывы</h2>
+        <div id="reviewsList"></div>
+    </div>
+</div>
+
+<script>
+    const movieId = 1;
+
+    fetch(`/movie/${movieId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Заполняем инфу о фильме
+            document.getElementById("title").textContent = data.title;
+            document.getElementById("year").textContent = "Год выпуска: " + data.year;
+            document.getElementById("description").textContent = data.description;
+
+            // Вычисляем средний рейтинг
+            let sum = 0;
+            data.reviews.forEach(r => sum += r.rating);
+            const meanRating = (data.reviews.length > 0)
+                ? (sum / data.reviews.length).toFixed(2)
+                : "Нет оценок";
+
+            document.getElementById("meanRating").textContent = "⭐ Средняя оценка: " + meanRating;
+
+            // Выводим отзывы
+            const reviewsList = document.getElementById("reviewsList");
+            data.reviews.forEach(review => {
+                const div = document.createElement("div");
+                div.className = "review";
+                div.innerHTML = `
+            <strong>Пользователь #${review.userId}</strong>:
+            <span>оценка ${review.rating}</span>
+          `;
+                reviewsList.appendChild(div);
+            });
+        })
+        .catch(error => {
+            document.getElementById("title").textContent = "Ошибка загрузки данных 😢";
+            console.error("Ошибка:", error);
+        });
+</script>
+</body>
+</html>
