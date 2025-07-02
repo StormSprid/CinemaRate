@@ -4,10 +4,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+
 public class MovieEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +21,7 @@ public class MovieEntity {
     String description;
     int year;
     //TODO create a new table with review per film
-    //List<RewiewEntity> rewiews;
+    List<RewiewEntity> rewiews;
 
 
     @Override
