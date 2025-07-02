@@ -1,9 +1,6 @@
 package com.example.cinemarate.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +22,8 @@ public class MovieEntity {
     String posterUrl;
     //TODO create a new table with review per film
     List<ReviewEntity> reviews;
-
+    @Transient
+    double meanRating = -1;
 
     public MovieEntity(String title, String description, int year, List<ReviewEntity> reviews) {
         this.title = title;
@@ -43,17 +41,31 @@ public class MovieEntity {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", year=" + year + '\'' +
-                ", rating=" + calculateMeanRating() +
+                ", rating=" + getMeanRating() +
                 '}';
     }
 
-    /** Calculate a mean rating to a film **/
-    private double calculateMeanRating(){
-        int sum  = 0;
-        for (ReviewEntity r :reviews){
-            sum += r.rating;
+    /** Calculate a mean rating to a film.
+     * {@code meanRating} variable is a cache that that help us to avoid extra calculations.
+     * If there are no reviews,return 0
+     * **/
+    private double getMeanRating() {
+        if (reviews.isEmpty()){
+            return 0;
         }
-        return (double) Math.round((double) sum / reviews.size() * 100) /100;
+        if (meanRating == -1) {
+            int sum = 0;
+            for (ReviewEntity r : reviews) {
+                sum += r.rating;
+            }
+            meanRating =  (double) Math.round((double) sum / reviews.size() * 100) / 100;
+        }
+            return meanRating;
+        }
+
+    private void resetMeanRating(){
+        meanRating = -1;
+    }
     }
 
-}
+
