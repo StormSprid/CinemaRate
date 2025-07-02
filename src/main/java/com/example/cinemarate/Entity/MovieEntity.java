@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.catalina.valves.rewrite.RewriteCond;
 
 import java.util.List;
 
@@ -45,13 +46,13 @@ public class MovieEntity {
                 '}';
     }
 
-    /** Calculate a mean rating to a film**/
-    private int calculateMeanRating(){
+    /** Calculate a mean rating to a film **/
+    private double calculateMeanRating(){
         int sum  = 0;
-        for(int i =0;i<reviews.size();i++){
-            sum += reviews.get(i).rating;
+        for (ReviewEntity r :reviews){
+            sum += r.rating;
         }
-        return sum / reviews.size();
+        return (double) Math.round((double) sum / reviews.size() * 100) /100;
     }
 
 }
