@@ -17,6 +17,7 @@ public class MovieController {
         m.setTitle("28 Days Later");
         m.setDescription("Zombie Film");
         m.setYear(2004);
+        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BM2I4NTI0ZGQtNGQ2ZC00ODIxLWI2N2QtMDBkNzI1NDhjYjE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg");
         m.setReviews( List.of(
                 new ReviewEntity(1L,5,1),
                 new ReviewEntity(2L,5,2),
