@@ -15,7 +15,8 @@ public class MovieEntity {
     String title;
     String description;
     int year;
-    List<RewieEntity> rewiews;
+    //TODO create a new table with review per film
+    //List<RewiewEntity> rewiews;
 
 
 

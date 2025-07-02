@@ -1,0 +1,15 @@
+version: '3.1'
+
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: CineRateDb
+    restart: always #restart container in case of error or failure 
+
+    environment:
+      POSTGRES_DB: CineRateDb
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+    ports:
+      - "5432:5432"

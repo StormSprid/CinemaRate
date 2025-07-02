@@ -1,4 +1,7 @@
 package com.example.cinemarate.Repository;
 
-public class MovieRepository {
+import com.example.cinemarate.Entity.MovieEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 }
