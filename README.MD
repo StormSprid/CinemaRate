@@ -3,4 +3,4 @@
 
 ### Project, Where you can grade your movie
 
-#### Completed by: Emil Galiyevgit 
+#### Completed by: Emil Galiyev 
