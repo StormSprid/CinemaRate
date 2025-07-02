@@ -19,5 +19,13 @@ public class MovieEntity {
     //List<RewiewEntity> rewiews;
 
 
-
+    @Override
+    public String toString() {
+        return "MovieEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", year=" + year +
+                '}';
+    }
 }
