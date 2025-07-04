@@ -1,12 +1,12 @@
 package com.example.cinemarate.Service;
 
 import com.example.cinemarate.Entity.MovieEntity;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public interface MovieService {
-    public MovieEntity getMovieById(Long id);
-    public MovieEntity save(MovieEntity m);
-    List<MovieEntity> allMovies();
-    void deleteMovie(MovieEntity m);
+   MovieEntity createMovie(MovieEntity movie);
+   MovieEntity updateMovie(MovieEntity movie,Long id);
+   void deleteMovie(Long id);
 }
