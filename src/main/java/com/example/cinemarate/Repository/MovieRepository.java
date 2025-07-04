@@ -14,4 +14,5 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 
     Optional<List<MovieEntity>> getMovieEntityByYear(int year);
 
+
 }

@@ -8,7 +8,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,7 +21,12 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieEntity createMovie(MovieEntity movie) {
-        return null;
+        if (movieRepository.findById(movie.getId()).isPresent()){
+            throw new EntityExistsException(String.format("Movie with id %d is already exist",movie.getId()));
+        }
+        movieRepository.save(movie);
+
+        return movie;
     }
 
     @Override
