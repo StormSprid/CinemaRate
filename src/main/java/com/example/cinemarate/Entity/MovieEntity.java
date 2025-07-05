@@ -1,38 +1,62 @@
 package com.example.cinemarate.Entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.catalina.valves.rewrite.RewriteCond;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 //@Entity
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MovieEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String title;
-    String description;
-    int year;
-    String posterUrl;
+     private Long  id;
+    private String title;
+    private String description;
+    private int  year;
+    private String posterUrl;
     //TODO create a new table with review per film
-    List<ReviewEntity> reviews;
+    private List<ReviewEntity> reviews = new ArrayList<>();
     @Transient
-    double meanRating = -1;
+    private double meanRating = -1;
 
-    public MovieEntity(String title, String description, int year, List<ReviewEntity> reviews) {
-        this.title = title;
-        this.description = description;
-        this.year = year;
-        this.reviews = reviews;
 
+    public static MovieEntity create(String title,String description,int year,String posterUrl){
+        MovieEntity m = new MovieEntity();
+        if(title.isBlank()){
+            throw  new IllegalArgumentException(String.format("Title %s is not valid.Error to create a Movie.",title));
+        }
+        else {
+            m.title = title;
+        }
+        if(description.isBlank()){
+            throw  new IllegalArgumentException(String.format("Description %s is not valid.Error to create a Movie.",description));
+        }
+        else {
+            m.description = description;
+        }
+        if (year < 1900 || year > 2030){
+            throw new IllegalArgumentException(String.format("Year %s is not valid.Error to create a Movie.",year));
+        }
+        else{
+            m.year = year;
+        }
+        if(posterUrl.isBlank()){
+            throw  new IllegalArgumentException(String.format("PosterURL %s is not valid.Error to create a Movie.",posterUrl));
+        }
+        else{
+            m.posterUrl = posterUrl;
+        }
+
+     return m;
     }
-
 
     @Override
     public String toString() {
@@ -49,14 +73,14 @@ public class MovieEntity {
      * {@code meanRating} variable is a cache that that help us to avoid extra calculations.
      * If there are no reviews,return 0
      * **/
-    private double getMeanRating() {
+    public  double getMeanRating() {
         if (reviews.isEmpty()){
             return 0;
         }
         if (meanRating == -1) {
             int sum = 0;
             for (ReviewEntity r : reviews) {
-                sum += r.rating;
+                sum += r.getRating();
             }
             meanRating =  (double) Math.round((double) sum / reviews.size() * 100) / 100;
         }
