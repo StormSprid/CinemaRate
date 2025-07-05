@@ -6,12 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * Spring Data JPA repository for MovieEntity.
+ * Includes standard CRUD operations, pagination, and query derivation.
+ */
 @Repository
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 
-    Optional<MovieEntity> getMovieEntityById(Long id);
+    List<MovieEntity> findByYear(int year);
 
-    Optional<List<MovieEntity>> getMovieEntityByYear(int year);
 
 }
