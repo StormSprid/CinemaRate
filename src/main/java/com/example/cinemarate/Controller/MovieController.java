@@ -13,15 +13,30 @@ import java.util.List;
 public class MovieController {
     @GetMapping("/{id}")
     public MovieEntity getMovie( @PathVariable String id){
-        MovieEntity m = new MovieEntity();
-        m.setTitle("28 Days Later");
-        m.setDescription("Zombie Film");
-        m.setYear(2004);
-        m.setPosterUrl("https://m.media-amazon.com/images/M/MV5BM2I4NTI0ZGQtNGQ2ZC00ODIxLWI2N2QtMDBkNzI1NDhjYjE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg");
+        MovieEntity m = MovieEntity.create(
+                "28 Days Later",
+                "Zombie Film",
+                2003,
+                "https://m.media-amazon.com/images/M/MV5BM2I4NTI0ZGQtNGQ2ZC00ODIxLWI2N2QtMDBkNzI1NDhjYjE5XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
+
+        );
         m.setReviews( List.of(
                 new ReviewEntity(1L,5,1),
                 new ReviewEntity(2L,5,2),
                 new ReviewEntity(2L,1,3)
+
+        ));
+        MovieEntity caveat = MovieEntity.create(
+                "Caveat",
+                "A lone drifter suffering from partial memory loss accepts a job to look after " +
+                        "a psychologically troubled woman in an abandoned house on an isolated island.",
+                2020,
+                "https://www.imdb.com/title/tt7917178/mediaviewer/rm1536143361/?ref_=tt_ov_i"
+        );
+        m.setReviews( List.of(
+                new ReviewEntity(1L,5,1),
+                new ReviewEntity(2L,5,2),
+                new ReviewEntity(2L,4,3)
 
         ));
         return m;
