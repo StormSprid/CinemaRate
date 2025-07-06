@@ -16,9 +16,6 @@ public class CinemaRateApplication {
     public static void main(String[] args) {
         SpringApplication.run(CinemaRateApplication.class, args);
 
-
-
-
     }
 
 }
