@@ -9,6 +9,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 public class MovieEntityTest {
+    private static final String VALID_TITLE = "Title";
+    private static final String VALID_DESCRIPTION = "Description";
+    private static final String VALID_URL = "url";
     @Test
     void createTest_WithValidData(){
         MovieEntity m = MovieEntity.create(
@@ -30,7 +33,7 @@ public class MovieEntityTest {
     void createTest_InvalidTitle(){
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,()->MovieEntity.create(
                 "",
-                "desc",
+                VALID_DESCRIPTION,
                 2020,
                 "url"
         ));
@@ -40,10 +43,10 @@ public class MovieEntityTest {
     void createTest_InvalidDescription(){
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,()->
                 MovieEntity.create(
-                        "Title",
+                        VALID_TITLE,
                         "",
                         2020,
-                        "url"
+                        VALID_URL
 
                 ));
         assertTrue(ex.getMessage().contains("Description"));
@@ -52,10 +55,10 @@ public class MovieEntityTest {
     void createTest_InvalidLowYear(){
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,()->
                 MovieEntity.create(
-                        "Title",
-                        "Desc",
+                        VALID_TITLE,
+                        VALID_DESCRIPTION,
                         10,
-                        "url"
+                        VALID_URL
 
                 ));
         assertTrue(ex.getMessage().contains("Year"));
@@ -64,10 +67,10 @@ public class MovieEntityTest {
     void createTest_InvalidHighYear(){
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,()->
                 MovieEntity.create(
-                        "Title",
-                        "Desc",
+                        VALID_TITLE,
+                        VALID_DESCRIPTION,
                         10000,
-                        "url"
+                        VALID_URL
 
                 ));
                 assertTrue(ex.getMessage().contains("Year"));
@@ -76,7 +79,7 @@ public class MovieEntityTest {
     void createTest_InvalidPoster(){
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,()->
                 MovieEntity.create(
-                        "Title",
+                        VALID_TITLE,
                         "Desc",
                         2020,
                         ""
