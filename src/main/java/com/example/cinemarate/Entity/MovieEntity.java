@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Entity
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,6 +23,7 @@ public class MovieEntity {
     private int  year;
     private String posterUrl;
     //TODO create a new table with review per film
+    @Transient
     private List<ReviewEntity> reviews = new ArrayList<>();
     @Transient
     private double meanRating = -1;

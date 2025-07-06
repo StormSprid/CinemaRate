@@ -31,14 +31,14 @@ public class MovieController {
                 "A lone drifter suffering from partial memory loss accepts a job to look after " +
                         "a psychologically troubled woman in an abandoned house on an isolated island.",
                 2020,
-                "https://www.imdb.com/title/tt7917178/mediaviewer/rm1536143361/?ref_=tt_ov_i"
+                "https://resizing.flixster.com/H50hcdB92hfMfmqAB1OOavpVOBQ=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2U4ZjcyNTM0LWNkYjktNDhiOC1iYTJkLTI4OTJjMGYwZTBlOC5qcGc="
         );
-        m.setReviews( List.of(
+        caveat.setReviews( List.of(
                 new ReviewEntity(1L,5,1),
                 new ReviewEntity(2L,5,2),
                 new ReviewEntity(2L,4,3)
 
         ));
-        return m;
+        return caveat;
     }
 }

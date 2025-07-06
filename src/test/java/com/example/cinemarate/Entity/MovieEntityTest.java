@@ -1,5 +1,6 @@
 package com.example.cinemarate.Entity;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,6 +14,7 @@ public class MovieEntityTest {
     private static final String VALID_DESCRIPTION = "Description";
     private static final String VALID_URL = "url";
     @Test
+    @DisplayName("Should create MovieEntity when data is valid")
     void createTest_WithValidData(){
         MovieEntity m = MovieEntity.create(
                 "Caveat",
