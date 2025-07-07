@@ -1,23 +1,18 @@
-package com.example.cinemarate.Entity.OMDB_MIGRATOR;
+package com.example.cinemarate.OMDB_MIGRATOR;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class CsvParser {
 
 
-    public static List<String> getListofFilmTitles(){
-        System.out.println("Enter a path of a CSV file:");
-        Scanner scanner = new Scanner(System.in);
-        String path = scanner.nextLine();
+    public static List<String> getListofFilmTitles(String path){
+
         List<String> moviesId = new ArrayList<>();
 
 
@@ -39,9 +34,7 @@ public class CsvParser {
         return moviesId;
     }
 
-    public static void main(String[] args) {
-        CsvParser.getListofFilmTitles();
-    }
+
 
 
 }
