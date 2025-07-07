@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8" />
-    <title>Информация о фильме</title>
+    <title>Все фильмы</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -10,22 +10,19 @@
             margin: 0;
             padding: 20px;
         }
-
         .container {
             max-width: 900px;
-            margin: auto;
+            margin: 20px auto;
             background: #fff;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
         }
-
         .header {
             display: flex;
             align-items: flex-start;
             gap: 20px;
         }
-
         .poster {
             width: 200px;
             height: auto;
@@ -33,104 +30,89 @@
             object-fit: cover;
             box-shadow: 0 0 5px rgba(0,0,0,0.3);
         }
-
         .text-info {
             flex: 1;
         }
-
         h1 {
             margin-top: 0;
             margin-bottom: 10px;
             color: #333;
         }
-
         .description {
             margin: 10px 0;
             color: #555;
         }
-
         .year {
             font-weight: bold;
             color: #777;
         }
-
         .rating {
             font-size: 18px;
             color: #ff9800;
             margin-top: 10px;
         }
-
         .reviews {
-            margin-top: 30px;
+            margin-top: 20px;
         }
-
         .review {
             padding: 10px;
             border-bottom: 1px solid #ccc;
         }
-
         .review:last-child {
             border-bottom: none;
-        }
-
-        .review strong {
-            color: #333;
-        }
-
-        .review span {
-            color: #555;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <img class="poster" id="poster" src="" alt="Постер фильма">
-        <div class="text-info">
-            <h1 id="title">Загрузка...</h1>
-            <div class="year" id="year"></div>
-            <div class="description" id="description"></div>
-            <div class="rating" id="meanRating"></div>
-        </div>
-    </div>
-    <div class="reviews" id="reviews">
-        <h2>Отзывы</h2>
-        <div id="reviewsList"></div>
-    </div>
-</div>
+<div id="reviewsList"></div>
 
 <script>
-    const movieId = 1;
-
-    fetch(`/movie/${movieId}`)
+    fetch("/movie/all")
         .then(response => response.json())
-        .then(data => {
-            document.getElementById("title").textContent = data.title;
-            document.getElementById("year").textContent = "Год выпуска: " + data.year;
-            document.getElementById("description").textContent = data.description;
-            document.getElementById("poster").src = data.posterUrl || "/static/images/no-image.png";
+        .then(movies => {
+            const container = document.getElementById("reviewsList");
+            container.innerHTML = ""; // очистим
 
-            let sum = 0;
-            data.reviews.forEach(r => sum += r.rating);
-            const meanRating = (data.reviews.length > 0)
-                ? (sum / data.reviews.length).toFixed(2)
-                : "Нет оценок";
+            if (movies.length === 0) {
+                container.innerHTML = "<p>Нет фильмов в базе.</p>";
+                return;
+            }
 
-            document.getElementById("meanRating").textContent = "⭐ Средняя оценка: " + meanRating;
+            movies.forEach(movie => {
+                let meanRating = "Нет оценок";
+                if (movie.reviews && movie.reviews.length > 0) {
+                    const sum = movie.reviews.reduce((acc, r) => acc + r.rating, 0);
+                    meanRating = (sum / movie.reviews.length).toFixed(2);
+                }
 
-            const reviewsList = document.getElementById("reviewsList");
-            data.reviews.forEach(review => {
                 const div = document.createElement("div");
-                div.className = "review";
+                div.className = "container";
                 div.innerHTML = `
-            <strong>Пользователь #${review.userId}</strong>:
-            <span>оценка ${review.rating}</span>
+            <div class="header">
+              <img class="poster" src="${movie.posterUrl || '/static/images/no-image.png'}" alt="Постер фильма">
+              <div class="text-info">
+                <h1>${movie.title}</h1>
+                <div class="year">Год выпуска: ${movie.year}</div>
+                <div class="description">${movie.description}</div>
+                <div class="rating">⭐ Средняя оценка: ${meanRating}</div>
+              </div>
+            </div>
+            <div class="reviews">
+              <h2>Отзывы</h2>
+              ${movie.reviews.map(review => `
+                <div class="review">
+                  <strong>Пользователь #${review.userId}</strong>:
+                  <span>оценка ${review.rating}</span>
+                </div>
+              `).join("")}
+            </div>
           `;
-                reviewsList.appendChild(div);
+                container.appendChild(div);
             });
         })
         .catch(error => {
-            document.getElementById("title").textContent = "Ошибка загрузки данных 😢";
+            const container = document.getElementById("reviewsList");
+            container.innerHTML = "<p>Ошибка загрузки данных 😢</p>";
             console.error("Ошибка:", error);
         });
 </script>
