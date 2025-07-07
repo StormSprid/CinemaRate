@@ -1,0 +1,183 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.main-header {
+    background-color: #333;
+    color: #fff;
+    padding: 15px 20px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo-placeholder {
+    font-size: 24px;
+}
+
+.site-title {
+    font-size: 22px;
+    margin: 0;
+}
+
+.container, .movie-list {
+    max-width: 900px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Для списка фильмов */
+.movie-card {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.movie-card:last-child {
+    border-bottom: none;
+}
+
+.movie-title {
+    margin: 0 0 5px;
+    font-size: 20px;
+}
+
+.movie-title a {
+    text-decoration: none;
+    color: #333;
+}
+
+.movie-title a:hover {
+    color: #007bff;
+}
+
+.movie-year {
+    font-weight: bold;
+    color: #777;
+}
+
+.movie-description {
+    margin-top: 5px;
+    color: #555;
+}
+
+/* Для страницы одного фильма */
+
+
+.poster {
+    width: 200px;
+    border-radius: 8px;
+    object-fit: cover;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.text-info {
+    flex: 1;
+}
+
+h1 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 24px;
+}
+
+.description {
+    margin: 10px 0;
+    color: #555;
+}
+
+.year {
+    font-weight: bold;
+    color: #777;
+}
+
+.rating {
+    font-size: 18px;
+    color: #ff9800;
+    margin-top: 10px;
+}
+
+.reviews {
+    margin-top: 20px;
+}
+
+.review {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.review:last-child {
+    border-bottom: none;
+}
+/*header
+/* Основной хедер */
+.main-header {
+    background-color: #f8f8f8; /* светло-серый фон */
+    color: #333;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Содержимое хедера */
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Логотип */
+.logo-icon {
+    width: 80px;   /* фиксированная ширина */
+    height: 80px;  /* фиксированная высота */
+    object-fit: contain;
+}
+
+/* Заголовок сайта */
+.site-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+/* Кнопка List */
+.header-button {
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+.header-button:hover {
+    background-color: #0056b3;
+}
+.header-content a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none; /* чтобы убрать подчеркивание */
+    color: inherit; /* чтобы текст оставался цвета заголовка */
+}
+.container .header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+

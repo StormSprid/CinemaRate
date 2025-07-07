@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8" />
+    <title>Все фильмы</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<header class="main-header">
+    <div class="header-content">
+        <a href="index.html">
+        <img src="/images/logo.png" alt="Логотип" class="logo-icon">
+        <h1 class="site-title">CinemaRate</h1>
+        </a>
+    </div>
+    <a href="index.html" class="header-button">Exit</a>
+</header>
+
+
+
+<div class="movie-list" id="moviesContainer"></div>
+
+<script>
+    fetch("/movie/all")
+        .then(response => response.json())
+        .then(movies => {
+            const container = document.getElementById("moviesContainer");
+            container.innerHTML = "";
+
+            if (movies.length === 0) {
+                container.innerHTML = "<p>Нет фильмов в базе.</p>";
+                return;
+            }
+
+            movies.forEach(movie => {
+                const div = document.createElement("div");
+                div.className = "movie-card";
+                div.innerHTML = `
+                    <h2 class="movie-title">
+                        <a href="movie.html?id=${movie.id}">${movie.title}</a>
+                    </h2>
+                    <div class="movie-year">Год выпуска: ${movie.year}</div>
+                    <div class="movie-description">${movie.description}</div>
+                `;
+                container.appendChild(div);
+            });
+        })
+        .catch(error => {
+            const container = document.getElementById("moviesContainer");
+            container.innerHTML = "<p>Ошибка загрузки данных 😢</p>";
+            console.error("Ошибка:", error);
+        });
+</script>
+</body>
+</html>
