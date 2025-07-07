@@ -10,8 +10,11 @@ import java.util.List;
 
 public class CsvParser {
 
-
-    public static List<String> getListofFilmTitles(String path){
+    /**
+     *
+     *Return list of movie ids from IMDB Database
+     */
+    public static List<String> getListOfFilmTitles(String path){
 
         List<String> moviesId = new ArrayList<>();
 
@@ -22,9 +25,7 @@ public class CsvParser {
                     .parse(in);
 
             for (CSVRecord record:records){
-                String title = record.get("Title");
                 String id = record.get("Const");
-                //System.out.println(title + "|" + id);
                 moviesId.add(id);
             }
         } catch (Exception e) {

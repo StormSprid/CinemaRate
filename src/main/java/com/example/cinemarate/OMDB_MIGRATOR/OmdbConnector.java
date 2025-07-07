@@ -26,7 +26,7 @@ public class OmdbConnector {
     }
 
     public void testLinks(){
-        List<String> ms = CsvParser.getListofFilmTitles("imdb_film_data.csv");
+        List<String> ms = CsvParser.getListOfFilmTitles("imdb_film_data.csv");
         for(String m : ms){
             System.out.println(createLink(m));
         }

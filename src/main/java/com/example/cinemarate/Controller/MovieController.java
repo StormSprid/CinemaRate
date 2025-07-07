@@ -2,6 +2,8 @@ package com.example.cinemarate.Controller;
 
 import com.example.cinemarate.Entity.MovieEntity;
 import com.example.cinemarate.Entity.ReviewEntity;
+import com.example.cinemarate.OMDB_MIGRATOR.MigrationProcessor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +13,8 @@ import java.util.List;
 @RequestMapping("/movie")
 @RestController()
 public class MovieController {
+    @Autowired
+    MigrationProcessor migrationProcessor;
     @GetMapping("/{id}")
     public MovieEntity getMovie( @PathVariable String id){
         MovieEntity m = MovieEntity.create(
@@ -40,5 +44,9 @@ public class MovieController {
 
         ));
         return caveat;
+    }
+    @GetMapping("/migration")
+    public void migrateDb(){
+        migrationProcessor.executeMigration("imdb_film_data.csv");
     }
 }
