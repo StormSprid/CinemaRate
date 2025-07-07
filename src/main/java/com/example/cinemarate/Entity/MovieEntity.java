@@ -88,7 +88,7 @@ public class MovieEntity {
             return meanRating;
         }
 
-    private void resetMeanRating(){
+    public void resetMeanRating(){
         meanRating = -1;
     }
     }
