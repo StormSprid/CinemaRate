@@ -34,3 +34,4 @@ build/
 .env
 /.env
 src/main/resources/static/images
+imdb_film_data.csv
