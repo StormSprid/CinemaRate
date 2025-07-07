@@ -21,7 +21,7 @@ public class MigrationProcessor {
             OmdbMovieDTO dto = connector.fetchMovieById(id);
             MovieEntity movie = MovieEntity.create(dto.getTitle(), dto.getDescription(), Integer.parseInt(dto.getYear()),dto.getPosterUrl());
             movieRepository.save(movie);
-            System.out.println("Movie " + dto.title + "has been saved into database");
+            System.out.println("Movie " + dto.title + " has been saved into database");
         }
     }
 }
