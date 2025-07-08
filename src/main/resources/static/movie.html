@@ -16,10 +16,13 @@
             <div class="year" id="year"></div>
             <div class="description" id="description"></div>
             <div class="rating" id="meanRating"></div>
-            <!-- Кнопка удалить -->
-            <button id="deleteButton" class="header-btn" style="background-color: #dc3545; margin-top: 10px;">
-                Удалить фильм
-            </button>
+            <!-- Кнопки управления -->
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                <a id="updateLink" class="header-btn add-button">Обновить фильм</a>
+                <button id="deleteButton" class="header-btn" style="background-color: #dc3545;">
+                    Удалить фильм
+                </button>
+            </div>
         </div>
     </div>
     <div class="reviews" id="reviews">
@@ -65,9 +68,9 @@
                     const div = document.createElement("div");
                     div.className = "review";
                     div.innerHTML = `
-            <strong>Пользователь #${review.userId}</strong>:
-            <span>оценка ${review.rating}</span>
-          `;
+                    <strong>Пользователь #${review.userId}</strong>:
+                    <span>оценка ${review.rating}</span>
+                `;
                     reviewsList.appendChild(div);
                 });
             })
@@ -98,6 +101,10 @@
         }
     });
 
+    // Устанавливаем ссылку на страницу обновления
+    const updateLink = document.getElementById('updateLink');
+    updateLink.href = `/update.html?id=${movieId}`;
+
     // Загрузка шапки
     fetch('/fragments/header.html')
         .then(response => response.text())
@@ -107,6 +114,7 @@
         .catch(error => {
             console.error('Не удалось загрузить header:', error);
         });
+
 </script>
 </body>
 </html>
