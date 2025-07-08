@@ -52,4 +52,9 @@ public class MovieController {
         return movieServiceImpl.updateMovie(movie,id);
 
     }
+    @DeleteMapping()
+    public void deleteMovie(@RequestParam Long id){
+        logger.info("Get a request to delete a movie {}",movieRepository.getById(id).getTitle());
+        movieServiceImpl.deleteMovie(id);
+    }
 }
