@@ -7,15 +7,8 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-<header class="main-header">
-    <div class="header-content">
-        <a href="index.html">
-        <img src="/images/logo.png" alt="Логотип" class="logo-icon">
-        <h1 class="site-title">CinemaRate</h1>
-        </a>
-    </div>
-    <a href="index.html" class="header-button">Exit</a>
-</header>
+<div id="header-placeholder"></div>
+
 
 
 
@@ -40,7 +33,7 @@
                     <h2 class="movie-title">
                         <a href="movie.html?id=${movie.id}">${movie.title}</a>
                     </h2>
-                    <div class="movie-year">Год выпуска: ${movie.year}</div>
+                    <div class="movie-year">${movie.year}</div>
                     <div class="movie-description">${movie.description}</div>
                 `;
                 container.appendChild(div);
@@ -51,6 +44,17 @@
             container.innerHTML = "<p>Ошибка загрузки данных 😢</p>";
             console.error("Ошибка:", error);
         });
+
+        fetch('/fragments/header.html')
+        .then(response => response.text())
+        .then(html => {
+        document.getElementById('header-placeholder').innerHTML = html;
+    })
+        .catch(error => {
+        console.error('Не удалось загрузить header:', error);
+    });
+
+
 </script>
 </body>
 </html>

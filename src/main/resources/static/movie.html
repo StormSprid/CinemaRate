@@ -6,15 +6,8 @@
     <meta charset="UTF-8" />
 </head>
 <body>
-<header class="main-header">
-    <div class="header-content">
-        <a href="movies.html">
-        <img src="/images/logo.png" alt="Логотип" class="logo-icon">
-        <h1 class="site-title">CinemaRate</h1>
-            </a>
-    </div>
-    <a href="index.html" class="header-button">Exit</a>
-</header>
+<div id="header-placeholder"></div>
+
 
 <div class="container">
     <div class="header">
@@ -77,6 +70,16 @@
                 console.error("Ошибка:", error);
             });
     }
+
+        fetch('/fragments/header.html')
+        .then(response => response.text())
+        .then(html => {
+        document.getElementById('header-placeholder').innerHTML = html;
+    })
+        .catch(error => {
+        console.error('Не удалось загрузить header:', error);
+    });
+
 </script>
 </body>
 </html>

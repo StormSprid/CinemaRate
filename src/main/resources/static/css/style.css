@@ -118,7 +118,7 @@ h1 {
 .review:last-child {
     border-bottom: none;
 }
-/*header
+/*header*/
 /* Основной хедер */
 .main-header {
     background-color: #f8f8f8; /* светло-серый фон */
@@ -154,15 +154,7 @@ h1 {
 }
 
 /* Кнопка List */
-.header-button {
-    background-color: #007bff;
-    color: white;
-    text-decoration: none;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 14px;
-    transition: background-color 0.2s;
-}
+
 
 .header-button:hover {
     background-color: #0056b3;
@@ -179,5 +171,37 @@ h1 {
     align-items: flex-start;
     gap: 20px;
 }
+.header-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.header-btn {
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: white;
+    transition: background-color 0.2s;
+}
+.header-button {
+    background-color: #007bff;
+}
+.header-button:hover {
+    background-color: #0056b3;
+}
+.login-button {
+    background-color: #1a9443;
+}
+.login-button:hover {
+    background-color: #157a38;
+}
+.add-button {
+    background-color: #ff9800; /* оранжевый */
+}
+.add-button:hover {
+    background-color: #e67e00; /* темнее при наведении */
+}
+
 
 
