@@ -14,15 +14,18 @@ import java.util.Optional;
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
+
+
     @Autowired
     public MovieServiceImpl(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
+
     }
 
     @Override
     public MovieEntity createMovie(MovieEntity movie) {
-        if (movieRepository.findById(movie.getId()).isPresent()){
-            throw new EntityExistsException(String.format("Movie with id %d is already exist",movie.getId()));
+        if (movieRepository.findByTitle(movie.getTitle()).isPresent()){
+            throw new EntityExistsException(String.format("Movie with Title %d is already exist",movie.getTitle()));
         }
         movieRepository.save(movie);
 
@@ -31,7 +34,21 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieEntity updateMovie(MovieEntity movie, Long id) {
-        return null;
+        Optional<MovieEntity> optMovie = movieRepository.findById(id);
+        if(optMovie.isPresent()){
+            MovieEntity newMovie = optMovie.get();
+            newMovie.setId(id);
+            newMovie.setTitle(movie.getTitle());
+            newMovie.setDescription(movie.getDescription());
+            newMovie.setYear(movie.getYear());
+            newMovie.setPosterUrl(movie.getPosterUrl());
+            newMovie.setReviews(movie.getReviews());
+            movieRepository.save(newMovie);
+            return newMovie;
+        }
+        else{
+            throw new EntityExistsException("Error with movie updating");
+        }
     }
 
     @Override

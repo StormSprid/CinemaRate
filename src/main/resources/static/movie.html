@@ -1,20 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<link rel="stylesheet" href="css/style.css">
-    <title>Movie</title>
     <meta charset="UTF-8" />
+    <title>Movie</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<header class="main-header">
-    <div class="header-content">
-        <a href="movies.html">
-        <img src="/images/logo.png" alt="Логотип" class="logo-icon">
-        <h1 class="site-title">CinemaRate</h1>
-            </a>
-    </div>
-    <a href="index.html" class="header-button">Exit</a>
-</header>
+<div id="header-placeholder"></div>
 
 <div class="container">
     <div class="header">
@@ -24,6 +16,13 @@
             <div class="year" id="year"></div>
             <div class="description" id="description"></div>
             <div class="rating" id="meanRating"></div>
+            <!-- Кнопки управления -->
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                <a id="updateLink" class="header-btn add-button">Обновить фильм</a>
+                <button id="deleteButton" class="header-btn" style="background-color: #dc3545;">
+                    Удалить фильм
+                </button>
+            </div>
         </div>
     </div>
     <div class="reviews" id="reviews">
@@ -36,6 +35,9 @@
     // Получаем ID из URL
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get("id");
+
+    const deleteButton = document.getElementById('deleteButton');
+    deleteButton.style.display = movieId ? 'inline-block' : 'none';
 
     if (!movieId) {
         document.getElementById("title").textContent = "ID фильма не указан в URL";
@@ -66,9 +68,9 @@
                     const div = document.createElement("div");
                     div.className = "review";
                     div.innerHTML = `
-                        <strong>Пользователь #${review.userId}</strong>:
-                        <span>оценка ${review.rating}</span>
-                    `;
+                    <strong>Пользователь #${review.userId}</strong>:
+                    <span>оценка ${review.rating}</span>
+                `;
                     reviewsList.appendChild(div);
                 });
             })
@@ -77,6 +79,42 @@
                 console.error("Ошибка:", error);
             });
     }
+
+    // Обработчик кнопки Удалить
+    deleteButton.addEventListener('click', () => {
+        if (confirm("Вы действительно хотите удалить этот фильм?")) {
+            fetch(`/movie?id=${movieId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Фильм успешно удален!');
+                        window.location.href = '/movies.html';
+                    } else {
+                        alert('Ошибка при удалении фильма');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при удалении:', error);
+                    alert('Ошибка сети при удалении фильма');
+                });
+        }
+    });
+
+    // Устанавливаем ссылку на страницу обновления
+    const updateLink = document.getElementById('updateLink');
+    updateLink.href = `/update.html?id=${movieId}`;
+
+    // Загрузка шапки
+    fetch('/fragments/header.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('header-placeholder').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Не удалось загрузить header:', error);
+        });
+
 </script>
 </body>
 </html>

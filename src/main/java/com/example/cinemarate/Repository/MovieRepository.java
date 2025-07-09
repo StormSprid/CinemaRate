@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
 
     List<MovieEntity> findByYear(int year);
+    Optional<MovieEntity> findByTitle(String title);
 
 
 }

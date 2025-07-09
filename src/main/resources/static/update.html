@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Обновить фильм</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<div class="container">
+    <h1>Редактировать фильм</h1>
+    <form id="updateForm" class="movie-form">
+        <div>
+            <label for="title">Название:</label><br>
+            <input type="text" id="title" name="title" required style="width: 100%; padding: 6px; margin-top: 4px;">
+        </div>
+        <div>
+            <label for="description">Описание:</label><br>
+            <textarea id="description" name="description" rows="4" required style="width: 100%; padding: 6px; margin-top: 4px;"></textarea>
+        </div>
+        <div>
+            <label for="year">Год выпуска:</label><br>
+            <input type="number" id="year" name="year" required style="width: 100%; padding: 6px; margin-top: 4px;">
+        </div>
+        <div>
+            <label for="posterUrl">URL постера:</label><br>
+            <input type="url" id="posterUrl" name="posterUrl" style="width: 100%; padding: 6px; margin-top: 4px;">
+        </div>
+        <button type="submit" class="header-btn add-button" style="margin-top: 10px;">
+            Сохранить изменения
+        </button>
+    </form>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get("id");
+
+    if (!movieId) {
+        alert("ID фильма не указан в URL");
+    } else {
+        // Загружаем данные фильма
+        fetch(`/movie/${movieId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Фильм не найден");
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("title").value = data.title;
+                document.getElementById("description").value = data.description;
+                document.getElementById("year").value = data.year;
+                document.getElementById("posterUrl").value = data.posterUrl;
+            })
+            .catch(error => {
+                console.error("Ошибка:", error);
+                alert("Ошибка загрузки фильма");
+            });
+    }
+
+    // Отправка формы
+    document.getElementById("updateForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const updatedMovie = {
+            title: document.getElementById("title").value,
+            description: document.getElementById("description").value,
+            year: parseInt(document.getElementById("year").value),
+            posterUrl: document.getElementById("posterUrl").value,
+            reviews: [],
+            meanRating: 0.0
+        };
+
+        fetch(`/movie/update?id=${movieId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedMovie)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert("Фильм успешно обновлен!");
+                    window.location.href = "/movies.html";
+                } else {
+                    alert("Ошибка при обновлении фильма");
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка при обновлении:", error);
+                alert("Ошибка сети");
+            });
+    });
+
+    // Загрузка хедера
+    fetch('/fragments/header.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('header-placeholder').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Не удалось загрузить header:', error);
+        });
+</script>
+</body>
+</html>
