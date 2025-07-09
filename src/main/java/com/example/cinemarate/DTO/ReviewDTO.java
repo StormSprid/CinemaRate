@@ -8,4 +8,5 @@ import lombok.Setter;
 public class ReviewDTO {
     private int rating;
     private Long userId;
+    private String text;
 }

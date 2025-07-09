@@ -38,11 +38,12 @@ public class ReviewController {
         MovieEntity movie = movieRepository.findById(movieId).orElseThrow();
         logger.info("Get a request to create a review to a movie {}",movie.getTitle());
 
-
-
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewServiceImpl.createReview(review,movie));
+    }
 
-
+    @DeleteMapping("/delete/{id}")
+    public void deleteReview(@PathVariable Long id){
+        reviewServiceImpl.deleteReview(id);
     }
 
 }

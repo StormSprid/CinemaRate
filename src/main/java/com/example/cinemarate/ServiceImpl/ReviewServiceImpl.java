@@ -15,7 +15,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
 
     public ReviewEntity createReview(ReviewDTO reviewDTO, MovieEntity movie) {
-        ReviewEntity review = ReviewEntity.create(reviewDTO.getRating(),reviewDTO.getUserId(),movie);
+        ReviewEntity review = ReviewEntity.create(reviewDTO.getRating(),reviewDTO.getUserId(),reviewDTO.getText(),movie);
         return reviewRepository.save(review);
 
     }
@@ -27,6 +27,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void deleteReview(Long id) {
-
+            reviewRepository.delete(reviewRepository.findById(id).orElseThrow());
     }
 }
