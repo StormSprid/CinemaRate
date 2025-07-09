@@ -18,17 +18,20 @@ public class ReviewEntity {
     @Setter
     private Long userId;
     @Setter
+    private String text;
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     @JsonIgnore
     private MovieEntity movie;
 
 
-    public static ReviewEntity create(int rating,Long userId,MovieEntity movie){
+    public static ReviewEntity create(int rating,Long userId,String text,MovieEntity movie){
         ReviewEntity review = new ReviewEntity();
 
         review.setRating(rating);
         review.setUserId(userId);
+        review.setText(text);
         review.setMovie(movie);
         return review;
     }

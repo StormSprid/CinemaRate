@@ -60,16 +60,25 @@
                 </button>
             </div>
         </div>
-
     </div>
+
     <div class="reviews" id="reviews">
         <h2>Отзывы</h2>
         <div id="reviewsList"></div>
     </div>
+
+    <!-- Форма для добавления отзыва -->
+    <div class="review-form">
+        <h2>Добавить отзыв</h2>
+        <label for="ratingInput">Оценка (1–10):</label>
+        <input type="number" id="ratingInput" min="1" max="10" required>
+        <label for="commentInput">Комментарий:</label>
+        <textarea id="commentInput" rows="3"></textarea>
+        <button id="submitReviewBtn" class="header-btn add-button" style="margin-top:10px;">Отправить отзыв</button>
+    </div>
 </div>
 
 <script>
-    // Получаем ID из URL
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get("id");
 
@@ -81,9 +90,7 @@
     } else {
         fetch(`/movie/${movieId}`)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("Фильм не найден");
-                }
+                if (!response.ok) throw new Error("Фильм не найден");
                 return response.json();
             })
             .then(data => {
@@ -105,9 +112,41 @@
                     const div = document.createElement("div");
                     div.className = "review";
                     div.innerHTML = `
-                    <strong>Пользователь #${review.userId}</strong>:
-                    <span>оценка ${review.rating}</span>
-                `;
+        <strong>Пользователь #${review.userId}</strong>:
+        <span>Оценка ${review.rating}</span>
+        <span>Комментарий:пше ${review.text}</span>
+        <button class="delete-review-btn" style="
+            margin-left: 10px;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 3px 7px;
+            border-radius: 3px;
+            cursor: pointer;
+        ">Удалить</button>
+    `;
+
+                    const deleteBtn = div.querySelector(".delete-review-btn");
+                    deleteBtn.addEventListener("click", () => {
+                        if (confirm("Удалить этот отзыв?")) {
+                            fetch(`/review/delete/${review.id}`, {
+                                method: "DELETE"
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        alert("Отзыв удалён");
+                                        div.remove(); // Убираем из DOM
+                                    } else {
+                                        alert("Ошибка при удалении отзыва");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Ошибка при удалении отзыва:", error);
+                                    alert("Ошибка сети");
+                                });
+                        }
+                    });
+
                     reviewsList.appendChild(div);
                 });
             })
@@ -117,12 +156,9 @@
             });
     }
 
-    // Обработчик кнопки Удалить
     deleteButton.addEventListener('click', () => {
         if (confirm("Вы действительно хотите удалить этот фильм?")) {
-            fetch(`/movie?id=${movieId}`, {
-                method: 'DELETE'
-            })
+            fetch(`/movie?id=${movieId}`, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
                         alert('Фильм успешно удален!');
@@ -138,11 +174,9 @@
         }
     });
 
-    // Устанавливаем ссылку на страницу обновления
     const updateLink = document.getElementById('updateLink');
     updateLink.href = `/update.html?id=${movieId}`;
 
-    // Загрузка шапки
     fetch('/fragments/header.html')
         .then(response => response.text())
         .then(html => {
@@ -152,96 +186,38 @@
             console.error('Не удалось загрузить header:', error);
         });
 
+    // Добавление отзыва
+    const submitReviewBtn = document.getElementById('submitReviewBtn');
+    submitReviewBtn.addEventListener('click', () => {
+        const rating = parseInt(document.getElementById('ratingInput').value);
+        const comment = document.getElementById('commentInput').value.trim();
 
-    //patch отдельных полей
+        if (isNaN(rating) || rating < 1 || rating > 10) {
+            alert("Пожалуйста, укажите оценку от 1 до 10");
+            return;
+        }
 
-
-    // Название
-    editTitleBtn.addEventListener("click", () => {
-        newTitleInput.value = document.getElementById("title").textContent;
-        editTitleForm.style.display = "block";
-    });
-    saveTitleBtn.addEventListener("click", () => {
-        const newTitle = newTitleInput.value.trim();
-        fetch(`/movie/${movieId}/title`, {
-            method: "PATCH",
+        fetch(`/review/create/${movieId}`, {
+            method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ title: newTitle })
+            body: JSON.stringify({
+                rating: rating,
+                text: comment
+            })
         })
-            .then(r => {
-                if (r.ok) {
-                    document.getElementById("title").textContent = newTitle;
-                    editTitleForm.style.display = "none";
-                    alert("Название обновлено!");
-                } else alert("Ошибка обновления");
+            .then(response => {
+                if (response.ok) {
+                    alert("Отзыв добавлен!");
+                    location.reload();
+                } else {
+                    alert("Ошибка добавления отзыва");
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка отправки отзыва:", error);
+                alert("Ошибка сети");
             });
     });
-
-    // Год
-    editYearBtn.addEventListener("click", () => {
-        const text = document.getElementById("year").textContent;
-        const yearValue = text.match(/\d+/) ? text.match(/\d+/)[0] : "";
-        newYearInput.value = yearValue;
-        editYearForm.style.display = "block";
-    });
-    saveYearBtn.addEventListener("click", () => {
-        const newYear = parseInt(newYearInput.value);
-        fetch(`/movie/${movieId}/year`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ year: newYear })
-        })
-            .then(r => {
-                if (r.ok) {
-                    document.getElementById("year").textContent = "Год выпуска: " + newYear;
-                    editYearForm.style.display = "none";
-                    alert("Год обновлен!");
-                } else alert("Ошибка обновления");
-            });
-    });
-
-    // Описание
-    editDescriptionBtn.addEventListener("click", () => {
-        newDescriptionInput.value = document.getElementById("description").textContent;
-        editDescriptionForm.style.display = "block";
-    });
-    saveDescriptionBtn.addEventListener("click", () => {
-        const newDesc = newDescriptionInput.value.trim();
-        fetch(`/movie/${movieId}/description`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ description: newDesc })
-        })
-            .then(r => {
-                if (r.ok) {
-                    document.getElementById("description").textContent = newDesc;
-                    editDescriptionForm.style.display = "none";
-                    alert("Описание обновлено!");
-                } else alert("Ошибка обновления");
-            });
-    });
-
-    // Постер
-    editPosterBtn.addEventListener("click", () => {
-        newPosterInput.value = document.getElementById("poster").src;
-        editPosterForm.style.display = "block";
-    });
-    savePosterBtn.addEventListener("click", () => {
-        const newPoster = newPosterInput.value.trim();
-        fetch(`/movie/${movieId}/poster`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ posterUrl: newPoster })
-        })
-            .then(r => {
-                if (r.ok) {
-                    document.getElementById("poster").src = newPoster;
-                    editPosterForm.style.display = "none";
-                    alert("Постер обновлен!");
-                } else alert("Ошибка обновления");
-            });
-    });
-
 </script>
 </body>
 </html>
