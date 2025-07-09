@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+
 @RequestMapping("/movie")
 @RestController()
 public class MovieController {
@@ -50,6 +52,24 @@ public class MovieController {
     public MovieEntity updateMovie(@RequestBody MovieEntity movie,@RequestParam Long id){
         logger.info("Get a request to update a movie {}",movie.getTitle());
         return movieServiceImpl.updateMovie(movie,id);
+
+    }
+    @PatchMapping("/{id}/title")
+    public MovieEntity updateMovieTitle(@PathVariable Long id, @RequestBody Map<String,String> body){
+        String newTitle = body.get("title");
+        return movieServiceImpl.updateMovieTitle(id,newTitle);
+
+    }
+    @PatchMapping("/{id}/description")
+    public MovieEntity updateMovieDescription(@PathVariable Long id, @RequestBody Map<String,String> body){
+        String newDescription = body.get("description");
+        return movieServiceImpl.updateMovieTitle(id,newDescription);
+
+    }
+    @PatchMapping("/{id}/year")
+    public MovieEntity updateMovieYear(@PathVariable Long id, @RequestBody Map<String,String> body){
+        String newYear = body.get("year");
+        return movieServiceImpl.updateMovieTitle(id,newYear);
 
     }
     @DeleteMapping()

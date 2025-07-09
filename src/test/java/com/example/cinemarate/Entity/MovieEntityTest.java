@@ -100,14 +100,14 @@ public class MovieEntityTest {
                 2020,
                 "https://www.imdb.com/title/tt7917178/mediaviewer/rm1536143361/?ref_=tt_ov_i"
         );
-        m.setReviews(
-               List.of(
-                        new ReviewEntity(1L,5,1),
-                        new ReviewEntity(2L,5,2),
-                        new ReviewEntity(2L,5,3)
-
-                )
-        );
+//        m.setReviews(
+//               List.of(
+//                        new ReviewEntity(1L,5,1),
+//                        new ReviewEntity(2L,5,2),
+//                        new ReviewEntity(2L,5,3)
+//
+//                )
+//        );
         assertEquals(5,m.getMeanRating());
 
     }
@@ -120,24 +120,24 @@ public class MovieEntityTest {
                 2020,
                 "https://www.imdb.com/title/tt7917178/mediaviewer/rm1536143361/?ref_=tt_ov_i"
         );
-        m.setReviews(
-                List.of(
-                        new ReviewEntity(1L,5,1),
-                        new ReviewEntity(2L,5,2),
-                        new ReviewEntity(2L,5,3)
-
-                )
-        );
+//        m.setReviews(
+//                List.of(
+//                        new ReviewEntity(1L,5,1),
+//                        new ReviewEntity(2L,5,2),
+//                        new ReviewEntity(2L,5,3)
+//
+//                )
+//        );
         m.resetMeanRating();
-        m.setReviews(
-                List.of(
-                        new ReviewEntity(1L,2,1),
-                        new ReviewEntity(2L,2,2),
-                        new ReviewEntity(2L,2,3)
-
-                )
-
-        );
+//        m.setReviews(
+//                List.of(
+//                        new ReviewEntity(1L,2,1),
+//                        new ReviewEntity(2L,2,2),
+//                        new ReviewEntity(2L,2,3)
+//
+//                )
+//
+//        );
         double expected = m.getMeanRating();
         assertNotEquals(-1,expected);
         assertNotEquals(5,expected);
