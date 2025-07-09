@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "Movies")
+@Table(name = "movie")
 public class MovieEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +26,13 @@ public class MovieEntity {
     private int  year;
     private String posterUrl;
     //TODO create a new table with review per film
-    @Transient
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+
     private List<ReviewEntity> reviews = new ArrayList<>();
     @Transient
     private double meanRating = -1;
 
-
+    //TODO refactor with setters not this.
     public static MovieEntity create(String title,String description,int year,String posterUrl){
         MovieEntity m = new MovieEntity();
         if(title.isBlank()){
@@ -61,6 +62,7 @@ public class MovieEntity {
 
      return m;
     }
+
 
     @Override
     public String toString() {
@@ -94,6 +96,8 @@ public class MovieEntity {
     public void resetMeanRating(){
         meanRating = -1;
     }
-    }
+
+
+}
 
 

@@ -60,5 +60,43 @@ public class MovieServiceImpl implements MovieService {
         );
     }
 
+    @Override
+    public MovieEntity updateMovieTitle( Long id,String newTitle) {
+        Optional<MovieEntity> movieEntityOptional = movieRepository.findById(id);
+        if(movieEntityOptional.isPresent()) {
+            MovieEntity m = movieEntityOptional.get();
+            m.setTitle(newTitle);
+            return m;
+        }else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public MovieEntity updateMovieDescription(Long id, String newDescription) {
+        Optional<MovieEntity> movieEntityOptional = movieRepository.findById(id);
+        if(movieEntityOptional.isPresent()) {
+            MovieEntity m = movieEntityOptional.get();
+            m.setTitle(newDescription);
+            return m;
+        }else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Override
+    public MovieEntity updateMovieYear(Long id, String newYear) {
+        Optional<MovieEntity> movieEntityOptional = movieRepository.findById(id);
+        if(movieEntityOptional.isPresent()) {
+            MovieEntity m = movieEntityOptional.get();
+            m.setTitle(newYear);
+            return m;
+        }else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+
+
 }
 

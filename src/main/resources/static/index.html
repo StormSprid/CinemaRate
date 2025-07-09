@@ -1,38 +1,211 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Server alive</title>
+    <meta charset="UTF-8">
+    <title>CinemaRate</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f4;
-            margin: 0;
-            padding: 50px;
+        .card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        .btn-container {
             text-align: center;
+            margin-top: 30px;
         }
-        h1 {
-            color: #4CAF50;
-        }
-        .button {
+        .index-btn {
             display: inline-block;
-            padding: 15px 30px;
-            font-size: 18px;
-            color: #fff;
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            padding: 12px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
             text-decoration: none;
-            transition: background-color 0.3s ease;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            font-size: 15px;
         }
-        .button:hover {
-            background-color: #45a049;
+        .index-btn:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #888;
+            font-size: 14px;
+        }
+        .video-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .star-container {
+            text-align: center;
+            font-size: 32px;
+            color: #ccc;
+            margin: 30px 0;
+        }
+        .star-container span {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .movie-video-row {
+            display: flex;
+            align-items: center; /* По центру по вертикали */
+            gap: 20px;           /* Отступ между видео и звездами */
+            position: relative;  /* Чтобы использовать абсолютное позиционирование если потребуется */
+        }
+
+        /* Звезды займут центр доступного пространства */
+        .star-container {
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            gap: 5px;
+        }
+
+        .star-container span {
+            font-size: 50px;
+            cursor: default;
+            color: gold;
+            transition: all 0.3s ease;
+        }
+
+        .star-container span.filled {
+            color: gold; /* Цвет подсветки */
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stars = document.querySelectorAll('.star-container span');
+
+            function fillStarsInOrder() {
+                // Сначала делаем все пустыми
+                stars.forEach(s => s.textContent = '☆');
+
+                // Случайное число от 1 до 5
+                const count = Math.floor(Math.random() * 5) + 1;
+
+                // Подсвечиваем по порядку
+                for (let i = 0; i < count; i++) {
+                    setTimeout(() => {
+                        stars[i].textContent = '★'; // Залитая звезда
+                    }, i * 200); // задержка для анимации
+                }
+            }
+
+            fillStarsInOrder();
+
+            // Повторять каждые 3 секунды
+            setInterval(fillStarsInOrder, 1500);
+        });
+    </script>
+
 </head>
 <body>
-<h1>✅ Server working now</h1>
-<a href="/movies.html" class="button">List all films in database</a>
+
+<header class="main-header">
+    <div class="header-content">
+        <img src="/favicon.ico" alt="Logo" class="logo-icon">
+        <h1 class="site-title">CinemaRate</h1>
+    </div>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>🎬 CinemaRate</h2>
+        <p>CinemaRate is a Spring Boot application for storing movies and their ratings. The project demonstrates the basics of working with Java Spring, JPA entities, and REST API.</p>
+    </div>
+    <div class="card">
+
+        <div class="movie-info-container">
+
+
+            <div class="movie-video-row">
+                <iframe width="615" height="350"
+                        src="https://www.youtube.com/embed/35VDphr95dw?si=fREGsLtH2dLOlIf_&amp;controls=0"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                <div class="movie-details">
+                    <!-- Здесь твои блоки -->
+                    <div>
+                        <div style="display: flex; align-items: center;">
+                            <h1 id="title">The Fall Guy</h1>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display: flex; align-items: center;">
+                            <div class="year" id="year">2024</div>
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <div style="display: flex; align-items: center;">
+                            <div class="description" id="description">A stuntman, fresh off an almost career-ending accident, has to track down a missing movie star,
+                                solve a conspiracy and try to win back the love of his life while still doing his day job.</div>
+
+                        </div>
+                    </div>
+                    <div class="star-container">
+                        <span>☆</span>
+                        <span>☆</span>
+                        <span>☆</span>
+                        <span>☆</span>
+                        <span>☆</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="card">
+        <h2>📋 Features</h2>
+        <ul>
+            <li>Creation and storage of film information</li>
+            <li>Review list and average rating calculation</li>
+            <li>REST API for interacting with the application</li>
+            <li>Swagger API documentation</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>🛠 Technologies</h2>
+        <ul>
+            <li>Java 21</li>
+            <li>Spring Boot</li>
+            <li>Spring Data JPA & Hibernate</li>
+            <li>Lombok</li>
+            <li>PostgreSQL</li>
+            <li>Maven</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>🔗 API Access</h2>
+        <p>You can explore the API via Swagger UI and see all movies:</p>
+    </div>
+
+    <div class="btn-container">
+        <a href="/movies.html" class="index-btn">🎬 List All Films</a>
+        <a href="http://localhost:8080/swagger-ui.html" class="index-btn">📘 Open Swagger UI</a>
+    </div>
+
+</div>
+
+<footer>
+    &copy; 2025 CinemaRate. All rights reserved.
+</footer>
+
 </body>
 </html>

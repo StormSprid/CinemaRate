@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Movie</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
 <div id="header-placeholder"></div>
@@ -12,10 +13,45 @@
     <div class="header">
         <img class="poster" id="poster" src="" alt="Постер фильма">
         <div class="text-info">
-            <h1 id="title">Загрузка...</h1>
-            <div class="year" id="year"></div>
-            <div class="description" id="description"></div>
+            <!-- Название -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <h1 id="title">Загрузка...</h1>
+                    <button id="editTitleBtn" class="edit-btn" title="Редактировать название">✏️</button>
+                </div>
+                <div id="editTitleForm" class="edit-form">
+                    <input type="text" id="newTitleInput">
+                    <button id="saveTitleBtn" class="header-btn add-button">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Год выпуска -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <div class="year" id="year">Год выпуска:</div>
+                    <button id="editYearBtn" class="edit-btn" title="Редактировать год">✏️</button>
+                </div>
+                <div id="editYearForm" class="edit-form">
+                    <input type="number" id="newYearInput">
+                    <button id="saveYearBtn" class="header-btn add-button">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Описание -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <div class="description" id="description"></div>
+                    <button id="editDescriptionBtn" class="edit-btn" title="Редактировать описание">✏️</button>
+                </div>
+                <div id="editDescriptionForm" class="edit-form">
+                    <textarea id="newDescriptionInput" rows="3"></textarea>
+                    <button id="saveDescriptionBtn" class="header-btn add-button">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Средняя оценка -->
             <div class="rating" id="meanRating"></div>
+
             <!-- Кнопки управления -->
             <div style="margin-top: 10px; display: flex; gap: 10px;">
                 <a id="updateLink" class="header-btn add-button">Обновить фильм</a>
@@ -24,6 +60,7 @@
                 </button>
             </div>
         </div>
+
     </div>
     <div class="reviews" id="reviews">
         <h2>Отзывы</h2>
@@ -114,6 +151,96 @@
         .catch(error => {
             console.error('Не удалось загрузить header:', error);
         });
+
+
+    //patch отдельных полей
+
+
+    // Название
+    editTitleBtn.addEventListener("click", () => {
+        newTitleInput.value = document.getElementById("title").textContent;
+        editTitleForm.style.display = "block";
+    });
+    saveTitleBtn.addEventListener("click", () => {
+        const newTitle = newTitleInput.value.trim();
+        fetch(`/movie/${movieId}/title`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ title: newTitle })
+        })
+            .then(r => {
+                if (r.ok) {
+                    document.getElementById("title").textContent = newTitle;
+                    editTitleForm.style.display = "none";
+                    alert("Название обновлено!");
+                } else alert("Ошибка обновления");
+            });
+    });
+
+    // Год
+    editYearBtn.addEventListener("click", () => {
+        const text = document.getElementById("year").textContent;
+        const yearValue = text.match(/\d+/) ? text.match(/\d+/)[0] : "";
+        newYearInput.value = yearValue;
+        editYearForm.style.display = "block";
+    });
+    saveYearBtn.addEventListener("click", () => {
+        const newYear = parseInt(newYearInput.value);
+        fetch(`/movie/${movieId}/year`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ year: newYear })
+        })
+            .then(r => {
+                if (r.ok) {
+                    document.getElementById("year").textContent = "Год выпуска: " + newYear;
+                    editYearForm.style.display = "none";
+                    alert("Год обновлен!");
+                } else alert("Ошибка обновления");
+            });
+    });
+
+    // Описание
+    editDescriptionBtn.addEventListener("click", () => {
+        newDescriptionInput.value = document.getElementById("description").textContent;
+        editDescriptionForm.style.display = "block";
+    });
+    saveDescriptionBtn.addEventListener("click", () => {
+        const newDesc = newDescriptionInput.value.trim();
+        fetch(`/movie/${movieId}/description`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ description: newDesc })
+        })
+            .then(r => {
+                if (r.ok) {
+                    document.getElementById("description").textContent = newDesc;
+                    editDescriptionForm.style.display = "none";
+                    alert("Описание обновлено!");
+                } else alert("Ошибка обновления");
+            });
+    });
+
+    // Постер
+    editPosterBtn.addEventListener("click", () => {
+        newPosterInput.value = document.getElementById("poster").src;
+        editPosterForm.style.display = "block";
+    });
+    savePosterBtn.addEventListener("click", () => {
+        const newPoster = newPosterInput.value.trim();
+        fetch(`/movie/${movieId}/poster`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ posterUrl: newPoster })
+        })
+            .then(r => {
+                if (r.ok) {
+                    document.getElementById("poster").src = newPoster;
+                    editPosterForm.style.display = "none";
+                    alert("Постер обновлен!");
+                } else alert("Ошибка обновления");
+            });
+    });
 
 </script>
 </body>

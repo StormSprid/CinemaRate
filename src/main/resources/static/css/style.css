@@ -205,3 +205,20 @@ h1 {
 
 
 
+
+
+
+.edit-form {
+    display: none;
+    margin-top: 5px;
+}
+.edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: 5px;
+}
+
+
+
