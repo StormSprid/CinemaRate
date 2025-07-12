@@ -6,6 +6,9 @@ import com.example.cinemarate.Entity.UserEntity;
 import com.example.cinemarate.Repository.UserRepository;
 import com.example.cinemarate.ServiceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -21,11 +24,12 @@ public class UserController {
     private UserConverter converter;
 
     @GetMapping("/{id}")
-    public Optional<UserEntity> getUser(@PathVariable Long id){
+    public Optional<UserEntity> getUser(@PathVariable Long id) {
         return repository.findById(id);
     }
+
     @PostMapping("/registration")
-    public UserDTO register(@RequestBody UserDTO dto){
-        return service.register(dto);
+    public ResponseEntity<UserDTO> register(@RequestBody UserDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.register(dto));
     }
 }
