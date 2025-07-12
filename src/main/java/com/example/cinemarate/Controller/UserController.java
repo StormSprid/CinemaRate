@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable Long id){
-
+        return null;
     }
 }
