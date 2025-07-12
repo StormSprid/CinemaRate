@@ -4,6 +4,6 @@ import com.example.cinemarate.DTO.UserDTO;
 import com.example.cinemarate.Entity.UserEntity;
 
 public interface UserService {
-    UserEntity createUser(UserDTO userDTO);
+    UserEntity register(UserDTO userDTO);
     void deleteUser(Long id);
 }
