@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) //TODO find out for what it's stands for
 @Table(name = "movie")
 public class MovieEntity {
     @Id
@@ -25,15 +25,15 @@ public class MovieEntity {
     private String description;
     private int  year;
     private String posterUrl;
-    //TODO create a new table with review per film
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     @Setter
     private List<ReviewEntity> reviews = new ArrayList<>();
     @Transient
     private double meanRating = -1;
 
-    //TODO refactor with setters not this.
+
     public static MovieEntity create(String title,String description,int year,String posterUrl){
+
         MovieEntity m = new MovieEntity();
         m.setTitle(title);
         m.setDescription(description);
