@@ -24,8 +24,8 @@ public class UserController {
     private UserConverter converter;
 
     @GetMapping("/{id}")
-    public Optional<UserEntity> getUser(@PathVariable Long id) {
-        return repository.findById(id);
+    public Optional<UserDTO> getUser(@PathVariable Long id) {
+        return Optional.ofNullable(converter.toDto(repository.findById(id)));
     }
 
     @PostMapping("/registration")
