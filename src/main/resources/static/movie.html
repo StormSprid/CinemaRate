@@ -114,7 +114,7 @@
                     div.innerHTML = `
         <strong>Пользователь #${review.userId}</strong>:
         <span>Оценка ${review.rating}</span>
-        <span>Комментарий:пше ${review.text}</span>
+        <span>Комментарий: ${review.text}</span>
         <button class="delete-review-btn" style="
             margin-left: 10px;
             background-color: #dc3545;
@@ -202,6 +202,7 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 rating: rating,
+                userId:2,
                 text: comment
             })
         })

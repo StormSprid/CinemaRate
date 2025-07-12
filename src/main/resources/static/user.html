@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Профиль пользователя</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .user-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .user-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .user-info {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+        .user-info div {
+            margin-bottom: 10px;
+        }
+        .user-info strong {
+            display: inline-block;
+            min-width: 140px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="user-container">
+    <h2>Профиль пользователя</h2>
+    <div class="user-info" id="userInfo">
+        Загрузка данных...
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("id") || 2; // По умолчанию id=2
+
+    fetch(`/user/${userId}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Не удалось получить данные пользователя");
+            return response.json();
+        })
+        .then(data => {
+            const userInfoDiv = document.getElementById("userInfo");
+            userInfoDiv.innerHTML = `
+        <div><strong>Имя пользователя:</strong> ${data.username}</div>
+        <div><strong>Email:</strong> ${data.email}</div>
+        <div><strong>Пароль:</strong> ${data.password}</div>
+      `;
+        })
+        .catch(error => {
+            document.getElementById("userInfo").textContent = "Ошибка загрузки профиля 😢";
+            console.error(error);
+        });
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.catalina.User;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -16,21 +17,24 @@ public class ReviewEntity {
     private Long id;
     private int rating;
     @Setter
-    private Long userId;
-    @Setter
     private String text;
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     @JsonIgnore
     private MovieEntity movie;
+    @Setter
+    @ManyToOne
+    @JoinColumn(name= "user_id")
+    @JsonIgnore
+    private UserEntity user;
 
 
-    public static ReviewEntity create(int rating,Long userId,String text,MovieEntity movie){
+    public static ReviewEntity create(int rating, String text, MovieEntity movie, UserEntity user){
         ReviewEntity review = new ReviewEntity();
 
         review.setRating(rating);
-        review.setUserId(userId);
+        review.setUser(user);
         review.setText(text);
         review.setMovie(movie);
         return review;
