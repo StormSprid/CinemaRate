@@ -2,6 +2,7 @@ package com.example.cinemarate.ServiceImpl;
 
 import com.example.cinemarate.Converter.UserConverter;
 import com.example.cinemarate.DTO.UserDTO;
+import com.example.cinemarate.Entity.Role;
 import com.example.cinemarate.Entity.UserEntity;
 import com.example.cinemarate.Repository.UserRepository;
 import com.example.cinemarate.Service.UserService;
@@ -19,7 +20,11 @@ public class UserServiceImpl implements UserService {
     private UserRepository repository;
     @Override
     public UserDTO register(UserDTO userDTO) {
-        repository.save(converter.fromDto(userDTO));
+        UserEntity userToCreate = converter.fromDto(userDTO);
+        if(userDTO.getUsername().contains("admin")){
+            userToCreate.setRole(Role.Admin);
+        }
+        repository.save(userToCreate);
         return userDTO;
     }
 

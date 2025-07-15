@@ -27,6 +27,8 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<ReviewEntity> reviews = new ArrayList<>();
 
+    private Role role = Role.User;
+
     public static UserEntity create(String username,String email,String password){
         UserEntity u = new UserEntity();
         u.setUsername(username);
