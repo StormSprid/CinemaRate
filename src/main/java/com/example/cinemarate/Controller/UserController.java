@@ -32,4 +32,8 @@ public class UserController {
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.register(dto));
     }
+    @PostMapping("/login")
+    public UserDTO login(@RequestBody UserDTO dto ){
+        return service.login(dto);
+    }
 }
