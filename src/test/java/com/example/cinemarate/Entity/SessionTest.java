@@ -27,4 +27,12 @@ public class SessionTest {
         );
         assertTrue(session.validateSession());
     }
-}
+    @Test
+    void testToString(){
+        Session session = new Session().issue(
+                "Emil",
+                Role.Admin
+        );
+        System.out.println(session);
+
+    }}
