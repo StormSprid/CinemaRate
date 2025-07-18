@@ -5,6 +5,7 @@ import com.example.cinemarate.DTO.UserDTO;
 import com.example.cinemarate.Entity.UserEntity;
 import com.example.cinemarate.Repository.UserRepository;
 import com.example.cinemarate.ServiceImpl.UserServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<UserDTO> register(@RequestBody UserDTO dto) {
+    public ResponseEntity<UserDTO> register(@Valid @RequestBody UserDTO dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.register(dto));
     }
     @PostMapping("/login")
