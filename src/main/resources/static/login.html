@@ -56,7 +56,6 @@
     </form>
     <div class="message" id="message"></div>
 </div>
-
 <script>
     document.getElementById("loginForm").addEventListener("submit", function(event) {
         event.preventDefault();
@@ -74,30 +73,37 @@
         })
             .then(response => {
                 if (!response.ok) {
-                    // Если статус не 2xx
                     return response.text().then(text => {
                         throw new Error(text || "Ошибка входа");
                     });
                 }
-                return response.json();
+                return response.json(); // Получаем JSON с sessionId
             })
             .then(data => {
-                // Проверяем, пустой ли объект
-                if (!data || Object.keys(data).length === 0) {
-                    throw new Error("Неверный email или пароль");
+                if (!data || !data.sessionId) {
+                    throw new Error("Сервер не вернул sessionId");
                 }
 
-                // Все ок, редирект
-                document.getElementById("message").textContent = "✅ Вход выполнен успешно!";
+                sessionStorage.setItem("sessionId", data.sessionId);
+                document.getElementById("message").innerHTML = `
+        ✅ Вход выполнен успешно!<br>
+        <strong>Session ID:</strong> ${data.sessionId}
+    `;
+
                 setTimeout(() => {
                     window.location.href = "/";
-                }, 1000);
+                }, 2000);
             })
             .catch(error => {
                 document.getElementById("message").textContent = "❌ " + error.message;
             });
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
     });
-
 </script>
+
 </body>
 </html>

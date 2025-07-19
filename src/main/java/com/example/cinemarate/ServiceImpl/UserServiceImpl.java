@@ -47,12 +47,13 @@ public class UserServiceImpl implements UserService {
             user = converter.toDto(optionalUser);
             Session session = new Session().issue(user.getUsername(),role);
             sessionRepository.save(session);
+            user.setSessionId(session.getId());
         }
         return user;
     }
 
     @Override
     public void deleteUser(Long id) {
-
+        repository.delete(repository.findById(id).orElseThrow());
     }
 }

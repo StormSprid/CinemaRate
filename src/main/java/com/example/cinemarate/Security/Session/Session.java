@@ -15,7 +15,7 @@ import java.util.UUID;
 @ToString
 public class Session {
     @Id
-    private UUID uuid;
+    private UUID id;
     @Column(name = "created_at")
     private LocalDateTime issueTime;
     private int lifeTime = 10;
@@ -24,7 +24,7 @@ public class Session {
 
     public Session issue(String username,Role role){
         Session session = new Session();
-        session.setUuid(UUID.randomUUID());
+        session.setId(UUID.randomUUID());
         session.setIssueTime(LocalDateTime.now());
         session.setUsername(username);
         session.setRole(role);
