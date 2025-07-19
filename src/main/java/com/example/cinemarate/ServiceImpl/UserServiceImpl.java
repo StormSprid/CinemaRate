@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
             user = converter.toDto(optionalUser);
             Session session = new Session().issue(user.getUsername(),role);
             sessionRepository.save(session);
+            user.setSessionId(session.getId());
         }
         else{
             List<ErrorModel> errors = new ArrayList<>();
@@ -74,6 +75,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-
+        repository.delete(repository.findById(id).orElseThrow());
     }
 }

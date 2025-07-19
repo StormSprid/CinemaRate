@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class UserDTO {
     @NotNull(message = "Username is mandatory")
@@ -22,5 +24,6 @@ public class UserDTO {
     @NotEmpty(message = "Password cannot be empty")
     @Size(max = 30)
     private String password;
+    private UUID  sessionId;
 
 }
