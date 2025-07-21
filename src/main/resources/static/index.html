@@ -105,6 +105,37 @@
             // Повторять каждые 3 секунды
             setInterval(fillStarsInOrder, 1500);
         });
+        function openAdminPage() {
+            const sessionId = sessionStorage.getItem("sessionId");
+
+            if (!sessionId) {
+                alert("Session ID not found. Please log in first.");
+                return;
+            }
+
+            fetch("http://localhost:8080/admin", {
+                method: "GET",
+                headers: {
+                    "X-Session-Id": sessionId
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = "admin.html";
+                    } else if (response.status === 401) {
+                        alert("Unauthorized: Session ID missing or invalid.");
+                    } else if (response.status === 403) {
+                        alert("Forbidden: You do not have access.");
+                    } else {
+                        alert("Error: " + response.status);
+                    }
+                })
+                .catch(error => {
+                    console.error("Fetch error:", error);
+                    alert("Network error.");
+                });
+
+        }
     </script>
 
 </head>
@@ -197,7 +228,7 @@
     </div>
 
     <div class="btn-container">
-        <a href="/movies.html" class="index-btn">🎬 List All Films</a>
+        <button class="index-btn" onclick="openAdminPage()">🛠 Admin Page</button>
         <a href="http://localhost:8080/swagger-ui.html" class="index-btn">📘 Open Swagger UI</a>
     </div>
 

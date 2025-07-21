@@ -5,6 +5,7 @@ import com.example.cinemarate.Entity.ReviewEntity;
 import com.example.cinemarate.OMDB_MIGRATOR.MigrationProcessor;
 import com.example.cinemarate.Repository.MovieRepository;
 import com.example.cinemarate.ServiceImpl.MovieServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +18,16 @@ import java.util.Map;
 
 @RequestMapping("/movie")
 @RestController()
+@RequiredArgsConstructor
 public class MovieController {
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
-    @Autowired
+
     MigrationProcessor migrationProcessor;
-    @Autowired
-    MovieRepository movieRepository;
-    @Autowired
-    private MovieServiceImpl movieServiceImpl;
+
+    private final MovieRepository movieRepository;
+
+    private final MovieServiceImpl movieServiceImpl;
 
     @GetMapping("/{id}")
     public MovieEntity getMovie( @PathVariable String id){

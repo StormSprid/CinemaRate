@@ -6,6 +6,7 @@ import com.example.cinemarate.Entity.ReviewEntity;
 import com.example.cinemarate.Repository.MovieRepository;
 import com.example.cinemarate.Repository.ReviewRepository;
 import com.example.cinemarate.ServiceImpl.ReviewServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,15 @@ import java.util.List;
 
 @RequestMapping("/review")
 @RestController
+@RequiredArgsConstructor
 public class ReviewController {
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
-    @Autowired
-    private  ReviewServiceImpl reviewServiceImpl;
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private MovieRepository movieRepository;
+
+    private final ReviewServiceImpl reviewServiceImpl;
+
+    private final ReviewRepository reviewRepository;
+
+    private final MovieRepository movieRepository;
 
 
 
