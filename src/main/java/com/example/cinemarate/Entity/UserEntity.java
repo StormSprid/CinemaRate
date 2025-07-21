@@ -19,12 +19,16 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String username;
+    @Column(unique = true)
     private String email;
     private String password;
     private String dateOfCreation;
     @OneToMany(mappedBy = "user")
     private List<ReviewEntity> reviews = new ArrayList<>();
+
+    private Role role = Role.User;
 
     public static UserEntity create(String username,String email,String password){
         UserEntity u = new UserEntity();

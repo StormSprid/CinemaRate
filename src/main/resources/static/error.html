@@ -42,8 +42,17 @@
 
 <div class="container" style="text-align: center;">
     <h1 class="error-code">Ошибка</h1>
-    <p class="error-message">Произошла непредвиденная ошибка. Попробуйте обновить страницу или вернуться на главную.</p>
+    <p class="error-message" id="error-details">Произошла непредвиденная ошибка. Попробуйте обновить страницу или вернуться на главную.</p>
     <a href="/index.html" class="btn-back">🏠 На главную</a>
 </div>
+
+<script>
+    // Извлекаем параметр "error" из URL
+    const params = new URLSearchParams(window.location.search);
+    const errorMsg = params.get('error');
+    if (errorMsg) {
+        document.getElementById("error-details").textContent = decodeURIComponent(errorMsg);
+    }
+</script>
 </body>
 </html>

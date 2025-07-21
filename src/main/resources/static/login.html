@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Вход в аккаунт</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .login-container button:hover {
+            background-color: #218838;
+        }
+        .message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Вход</h2>
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Пароль" required minlength="1" />
+        <button type="submit">Войти</button>
+    </form>
+    <div class="message" id="message"></div>
+</div>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        fetch("/user/login", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                email: email,
+                password: password
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text || "Ошибка входа");
+                    });
+                }
+                return response.json(); // Получаем JSON с sessionId
+            })
+            .then(data => {
+                if (!data || !data.sessionId) {
+                    throw new Error("Сервер не вернул sessionId");
+                }
+
+                sessionStorage.setItem("sessionId", data.sessionId);
+                document.getElementById("message").innerHTML = `
+        ✅ Вход выполнен успешно!<br>
+        <strong>Session ID:</strong> ${data.sessionId}
+    `;
+
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 2000);
+            })
+            .catch(error => {
+                document.getElementById("message").textContent = "❌ " + error.message;
+            });
+
+    });
+</script>
+
+</body>
+</html>
