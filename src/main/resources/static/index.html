@@ -80,6 +80,10 @@
         .star-container span.filled {
             color: gold; /* Цвет подсветки */
         }
+        .auth-buttons .index-btn {
+            margin-left: 10px;
+        }
+
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -141,12 +145,18 @@
 </head>
 <body>
 
-<header class="main-header">
-    <div class="header-content">
-        <img src="/favicon.ico" alt="Logo" class="logo-icon">
-        <h1 class="site-title">CinemaRate</h1>
+<header class="main-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+    <div style="display: flex; align-items: center;">
+        <img src="/favicon.ico" alt="Logo" class="logo-icon" style="width: 40px; height: 40px;">
+        <h1 class="site-title" style="margin-left: 10px;">CinemaRate</h1>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="/login.html" class="index-btn">🔐 Login</a>
+        <a href="/register.html" class="index-btn">📝 Register</a>
     </div>
 </header>
+
+
 
 <div class="container">
     <div class="card">
