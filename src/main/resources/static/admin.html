@@ -44,43 +44,25 @@
             console.error("Ошибка:", error);
         });
 
-    fetch('/fragments/header.html')
+    fetch("/fragments/header.html")
         .then(response => response.text())
         .then(html => {
             document.getElementById('header-placeholder').innerHTML = html;
+
+            // Загрузили — теперь вызовем fetchUserName вручную
+            if (typeof fetchUserName === "function") {
+                fetchUserName();
+            } else {
+                // Если функция не определена — загрузи скрипт явно
+                const script = document.createElement("script");
+                script.src = "/js/header.js";
+                script.onload = () => fetchUserName();
+                document.body.appendChild(script);
+            }
         })
         .catch(error => {
             console.error('Не удалось загрузить header:', error);
         });
-    document.addEventListener("DOMContentLoaded", function () {
-        const sessionId = localStorage.getItem("sessionId");
-        if (!sessionId) {
-            document.getElementById("username-display").textContent = "Guest";
-            return;
-        }
-
-        fetch('/user/getName', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Session-Id': sessionId // кастомный заголовок с sessionId
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Ошибка при получении имени");
-                return res.text();
-            })
-            .then(name => {
-                console.log("Полученное имя пользователя:", name); // 🔷 Лог
-                document.getElementById("username-display").textContent = name;
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById("username-display").textContent = "Guest";
-            });
-    });
-
-
 </script>
 </body>
 </html>
