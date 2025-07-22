@@ -1,32 +1,18 @@
-async function fetchUserName() {
-    const sessionId = sessionStorage.getItem("sessionId");
+const uuid = sessionStorage.getItem("sessionId")
+let userName = '';
 
-
-    if (!sessionId) {
-        console.error("Session ID not found in localStorage");
-        window.location.href = "/login.html"; // редирект на страницу входа
-        return;
-    }
-
-    try {
-        const response = await fetch("user/getName", {
-            method: "GET",
-            headers: {
-                "X-Session-Id": sessionId
-            }
-        });
-
+fetch(`user/me/name?uuid=${uuid}`)
+    .then(response => {
         if (!response.ok) {
-            throw new Error("Failed to fetch user name");
+            throw new Error(`Ошибка HTTP: ${response.status}`);
         }
-
-        const userName = await response.text(); // plain text response
+        return response.text(); // так как сервер возвращает строку (имя)
+    })
+    .then(name => {
+        userName = name;
+        console.log('Имя пользователя:', userName);
         document.getElementById("username-display").innerText = "Hello, " + userName + "!";
-    } catch (error) {
-        console.error("Error fetching user name:", error);
-        document.getElementById("username-display").innerText = "Error loading name";
-    }
-}
-
-// Запуск после загрузки страницы
-fetchUserName();
+    })
+    .catch(error => {
+        console.error('Ошибка при получении имени пользователя:', error);
+    });
