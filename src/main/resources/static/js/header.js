@@ -16,3 +16,33 @@ fetch(`user/me/name?uuid=${uuid}`)
     .catch(error => {
         console.error('Ошибка при получении имени пользователя:', error);
     });
+
+// header.js
+function logout() {
+    const uuid = sessionStorage.getItem("sessionId");
+    if (!uuid) {
+        alert("Сессия не найдена.");
+        return;
+    }
+
+    fetch(`/user/logout?uuid=${uuid}`, {
+        method: "POST"
+    })
+        .then(response => {
+            if (response.ok) {
+                sessionStorage.removeItem("uuid");
+                window.location.href = "/login.html";
+            } else {
+                alert("Ошибка при выходе");
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка:", error);
+            alert("Ошибка сети при выходе");
+        });
+}
+
+// Сделать функцию доступной глобально
+window.logout = logout;
+
+

@@ -6,6 +6,7 @@ import com.example.cinemarate.Service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 @Service
 @RequiredArgsConstructor
@@ -21,4 +22,18 @@ public class SessionServiceImpl implements SessionService {
         System.out.println("Searching session for ID = " + id);
         return sessionRepository.findNameById(id).orElseThrow();
     }
+
+    @Override
+    public boolean logout(UUID id) {
+        Optional<Session> sessionOpt = sessionRepository.findById(id);
+
+        if (sessionOpt.isPresent()) {
+            sessionRepository.delete(sessionOpt.get());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

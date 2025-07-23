@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../static/css/style.css">
     <meta charset="UTF-8"/>
     <title>Все фильмы</title>
     <link rel="stylesheet" href="/css/style.css">
@@ -30,7 +30,7 @@
                 div.className = "movie-card";
                 div.innerHTML = `
                     <h2 class="movie-title">
-                        <a href="movie.html?id=${movie.id}">${movie.title}</a>
+                        <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
                     </h2>
                     <div class="movie-year">${movie.year}</div>
                     <div class="movie-description">${movie.description}</div>
@@ -44,25 +44,19 @@
             console.error("Ошибка:", error);
         });
 
-    fetch("/fragments/header.html")
+    fetch('/fragments/header.html')
         .then(response => response.text())
         .then(html => {
             document.getElementById('header-placeholder').innerHTML = html;
-
-            // Загрузили — теперь вызовем fetchUserName вручную
-            if (typeof fetchUserName === "function") {
-                fetchUserName();
-            } else {
-                // Если функция не определена — загрузи скрипт явно
-                const script = document.createElement("script");
-                script.src = "/js/header.js";
-                script.onload = () => fetchUserName();
-                document.body.appendChild(script);
-            }
         })
         .catch(error => {
             console.error('Не удалось загрузить header:', error);
         });
+
+
+
+
 </script>
+<script type="module" src="/js/header.js"></script>
 </body>
 </html>

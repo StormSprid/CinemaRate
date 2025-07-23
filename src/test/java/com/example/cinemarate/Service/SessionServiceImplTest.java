@@ -11,9 +11,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
-public class ServiceImplTest {
+public class SessionServiceImplTest {
 
     private SessionRepository sessionRepository;
     private SessionService sessionService;

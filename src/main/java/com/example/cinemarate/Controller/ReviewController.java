@@ -33,10 +33,12 @@ public class ReviewController {
 
     @GetMapping("/{movieId}")
     public List<ReviewEntity> getMovieReviews(@PathVariable Long movieId){
+
         return reviewRepository.getAllByMovie_Id(movieId);
     }
     @PostMapping("/create/{movieId}")
     public ResponseEntity<ReviewEntity> createReview(@PathVariable Long movieId,@RequestBody ReviewDTO review){
+
         MovieEntity movie = movieRepository.findById(movieId).orElseThrow();
         logger.info("Get a request to create a review to a movie {}",movie.getTitle());
 

@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface SessionService {
     Session getSession(UUID id);
     String getNameById(UUID id);
+    boolean logout(UUID id);
 }
