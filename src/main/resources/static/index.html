@@ -80,6 +80,10 @@
         .star-container span.filled {
             color: gold; /* Цвет подсветки */
         }
+        .auth-buttons .index-btn {
+            margin-left: 10px;
+        }
+
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -107,7 +111,7 @@
         });
         function openAdminPage() {
             const sessionId = sessionStorage.getItem("sessionId");
-
+            console.log(sessionId)
             if (!sessionId) {
                 alert("Session ID not found. Please log in first.");
                 return;
@@ -116,12 +120,12 @@
             fetch("http://localhost:8080/admin", {
                 method: "GET",
                 headers: {
-                    "X-Session-Id": sessionId
+                    "sessionId": sessionId
                 }
             })
                 .then(response => {
                     if (response.ok) {
-                        window.location.href = "admin.html";
+                        window.location.href = "/admin";
                     } else if (response.status === 401) {
                         alert("Unauthorized: Session ID missing or invalid.");
                     } else if (response.status === 403) {
@@ -140,13 +144,19 @@
 
 </head>
 <body>
-
-<header class="main-header">
-    <div class="header-content">
-        <img src="/favicon.ico" alt="Logo" class="logo-icon">
-        <h1 class="site-title">CinemaRate</h1>
+<div id="header-placeholder"></div>
+<header class="main-header" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+    <div style="display: flex; align-items: center;">
+        <img src="/favicon.ico" alt="Logo" class="logo-icon" style="width: 40px; height: 40px;">
+        <h1 class="site-title" style="margin-left: 10px;">CinemaRate</h1>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="/login.html" class="index-btn">🔐 Login</a>
+        <a href="/register.html" class="index-btn">📝 Register</a>
     </div>
 </header>
+
+
 
 <div class="container">
     <div class="card">
@@ -229,7 +239,7 @@
 
     <div class="btn-container">
         <button class="index-btn" onclick="openAdminPage()">🛠 Admin Page</button>
-        <a href="http://localhost:8080/swagger-ui.html" class="index-btn">📘 Open Swagger UI</a>
+        <a href="http://localhost:8080/swagger-ui.html" class="index-btn">📘 Open Swagger UI(NOT WORKING)</a>
     </div>
 
 </div>

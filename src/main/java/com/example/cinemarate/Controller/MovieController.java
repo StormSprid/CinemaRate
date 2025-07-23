@@ -1,5 +1,7 @@
 package com.example.cinemarate.Controller;
 
+import com.example.cinemarate.Converter.MovieConverter;
+import com.example.cinemarate.DTO.MovieDTO;
 import com.example.cinemarate.Entity.MovieEntity;
 import com.example.cinemarate.Entity.ReviewEntity;
 import com.example.cinemarate.OMDB_MIGRATOR.MigrationProcessor;
@@ -30,10 +32,11 @@ public class MovieController {
     private final MovieServiceImpl movieServiceImpl;
 
     @GetMapping("/{id}")
-    public MovieEntity getMovie( @PathVariable String id){
+    public MovieDTO getMovie(@PathVariable String id) {
         logger.info("Get a request to a film with id {}", id);
-        return movieRepository.getById(Long.valueOf(id));
-
+        MovieEntity movie = movieRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        return MovieConverter.toDto(movie);
     }
     @GetMapping("/migration")
     public void migrateDb(){

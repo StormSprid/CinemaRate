@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Movie</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<div class="container">
+    <div class="header">
+        <img class="poster" id="poster" src="" alt="Постер фильма">
+        <div class="text-info">
+            <!-- Название -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <h1 id="title">Загрузка...</h1>
+                    <button id="editTitleBtn" class="edit-btn" title="Редактировать название">✏️</button>
+                </div>
+                <div id="editTitleForm" class="edit-form">
+                    <input type="text" id="newTitleInput">
+                    <button id="saveTitleBtn" class="header-btn add-button">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Год выпуска -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <div class="year" id="year">Год выпуска:</div>
+                    <button id="editYearBtn" class="edit-btn" title="Редактировать год">✏️</button>
+                </div>
+                <div id="editYearForm" class="edit-form">
+                    <input type="number" id="newYearInput">
+                    <button id="saveYearBtn" class="header-btn add-button">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Описание -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <div class="description" id="description"></div>
+                    <button id="editDescriptionBtn" class="edit-btn" title="Редактировать описание">✏️</button>
+                </div>
+                <div id="editDescriptionForm" class="edit-form">
+                    <textarea id="newDescriptionInput" rows="3"></textarea>
+                    <button id="saveDescriptionBtn" class="header-btn add-button">Сохранить</button>
+                </div>
+            </div>
+
+            <!-- Средняя оценка -->
+            <div class="rating" id="meanRating"></div>
+
+            <!-- Кнопки управления -->
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                <a id="updateLink" class="header-btn add-button">Обновить фильм</a>
+                <button id="deleteButton" class="header-btn" style="background-color: #dc3545;">
+                    Удалить фильм
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="reviews" id="reviews">
+        <h2>Отзывы</h2>
+        <div id="reviewsList"></div>
+    </div>
+
+    <!-- Форма для добавления отзыва -->
+    <div class="review-form">
+        <h2>Добавить отзыв</h2>
+        <label for="ratingInput">Оценка (1–10):</label>
+        <input type="number" id="ratingInput" min="1" max="10" required>
+        <label for="commentInput">Комментарий:</label>
+        <textarea id="commentInput" rows="3"></textarea>
+        <button id="submitReviewBtn" class="header-btn add-button" style="margin-top:10px;">Отправить отзыв</button>
+    </div>
+</div>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get("id");
+
+    const deleteButton = document.getElementById('deleteButton');
+    deleteButton.style.display = movieId ? 'inline-block' : 'none';
+
+    if (!movieId) {
+        document.getElementById("title").textContent = "ID фильма не указан в URL";
+    } else {
+        fetch(`/movie/${movieId}`)
+            .then(response => {
+                if (!response.ok) throw new Error("Фильм не найден");
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById("title").textContent = data.title;
+                document.getElementById("year").textContent = "Год выпуска: " + data.year;
+                document.getElementById("description").textContent = data.description;
+                document.getElementById("poster").src = data.posterUrl || "/static/images/no-image.png";
+
+                let sum = 0;
+                data.reviews.forEach(r => sum += r.rating);
+                const meanRating = (data.reviews.length > 0)
+                    ? (sum / data.reviews.length).toFixed(2)
+                    : "Нет оценок";
+
+                document.getElementById("meanRating").textContent = "⭐ Средняя оценка: " + meanRating;
+
+                const reviewsList = document.getElementById("reviewsList");
+                data.reviews.forEach(review => {
+                    const div = document.createElement("div");
+                    div.className = "review";
+                    div.innerHTML = `
+        <strong>Пользователь #${review.userId}</strong>:
+        <span>Оценка ${review.rating}</span>
+        <span>Комментарий: ${review.text}</span>
+        <button class="delete-review-btn" style="
+            margin-left: 10px;
+            background-color: #dc3545;
+            border: none;
+            color: white;
+            padding: 3px 7px;
+            border-radius: 3px;
+            cursor: pointer;
+        ">Удалить</button>
+    `;
+
+                    const deleteBtn = div.querySelector(".delete-review-btn");
+                    deleteBtn.addEventListener("click", () => {
+                        if (confirm("Удалить этот отзыв?")) {
+                            fetch(`/review/delete/${review.id}`, {
+                                method: "DELETE"
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        alert("Отзыв удалён");
+                                        div.remove();
+                                    } else {
+                                        alert("Ошибка при удалении отзыва");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error("Ошибка при удалении отзыва:", error);
+                                    alert("Ошибка сети");
+                                });
+                        }
+                    });
+
+                    reviewsList.appendChild(div);
+                });
+            })
+            .catch(error => {
+                document.getElementById("title").textContent = "Ошибка загрузки фильма 😢";
+                console.error("Ошибка:", error);
+            });
+    }
+
+    deleteButton.addEventListener('click', () => {
+        if (confirm("Вы действительно хотите удалить этот фильм?")) {
+            fetch(`/movie?id=${movieId}`, { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Фильм успешно удален!');
+                        window.location.href = '/movies.html';
+                    } else {
+                        alert('Ошибка при удалении фильма');
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при удалении:', error);
+                    alert('Ошибка сети при удалении фильма');
+                });
+        }
+    });
+
+    const updateLink = document.getElementById('updateLink');
+    updateLink.href = `/update.html?id=${movieId}`;
+
+    fetch('/fragments/header.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('header-placeholder').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Не удалось загрузить header:', error);
+        });
+
+    // Добавление отзыва
+    const submitReviewBtn = document.getElementById('submitReviewBtn');
+    submitReviewBtn.addEventListener('click', () => {
+        const rating = parseInt(document.getElementById('ratingInput').value);
+        const comment = document.getElementById('commentInput').value.trim();
+
+        if (isNaN(rating) || rating < 1 || rating > 10) {
+            alert("Пожалуйста, укажите оценку от 1 до 10");
+            return;
+        }
+        const  uuid = sessionStorage.getItem("sessionId")
+        fetch(`user/me/name?uuid=${uuid}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Не удалось получить имя пользователя");
+                }
+                return response.text(); // предполагаем, что API возвращает просто имя в виде строки
+            })
+            .then(username => {
+                return fetch(`/review/create/${movieId}`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        rating: rating,
+                        username: username,
+                        text: comment
+                    })
+                });
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Отзыв добавлен!");
+                    location.reload();
+                } else {
+                    alert("Ошибка добавления отзыва");
+                }
+            })
+            .catch(error => {
+                console.error("Ошибка при отправке отзыва:", error);
+                alert("Ошибка сети или авторизации");
+            });
+
+    });
+</script>
+</body>
+</html>

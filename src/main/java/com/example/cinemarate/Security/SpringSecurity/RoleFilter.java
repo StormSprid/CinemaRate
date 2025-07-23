@@ -30,36 +30,35 @@ public class RoleFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
 
         String path = request.getRequestURI();
-        System.out.println(">>> RoleFilter TRIGGERED for " + path);
-        System.out.println("REQUEST URI = " + path);
 
 
-        // Проверяем, если путь admin — и при этом нет заголовка, сразу запрещаем
-        if (path.contains("admin")) {
-            String sessionIdHeader = request.getHeader("X-Session-Id");
-            System.out.println("Session header = " + sessionIdHeader);
-
-            if (sessionIdHeader == null) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session ID required");
-                return;
-            }
-
-            try {
-                UUID sessionId = UUID.fromString(sessionIdHeader);
-                Session session = sessionService.getSession(sessionId);
-                System.out.println("SESSION = " + session); // временно добавить
-                System.out.println("ROLE = " + session.getRole());
-
-
-                if (session == null || session.getRole() != Role.Admin) {
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
-                    return;
-                }
-            } catch (IllegalArgumentException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid session ID format");
-                return;
-            }
-        }
+//
+//        // Проверяем, если путь admin — и при этом нет заголовка, сразу запрещаем
+//        if (path.contains("admin")) {
+//            String sessionIdHeader = request.getHeader("sessionId");
+//            System.out.println("Session header = " + sessionIdHeader);
+//
+//            if (sessionIdHeader == null) {
+//                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session ID required");
+//                return;
+//            }
+//
+//            try {
+//                UUID sessionId = UUID.fromString(sessionIdHeader);
+//                Session session = sessionService.getSession(sessionId);
+//                System.out.println("SESSION = " + session); // временно добавить
+//                System.out.println("ROLE = " + session.getRole());
+//
+//
+//                if (session == null || session.getRole() != Role.Admin) {
+//                    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied");
+//                    return;
+//                }
+//            } catch (IllegalArgumentException e) {
+//                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid session ID format");
+//                return;
+//            }
+//        }
 
         chain.doFilter(req, res);
     }

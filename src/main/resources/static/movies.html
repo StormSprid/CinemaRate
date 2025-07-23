@@ -52,35 +52,11 @@
         .catch(error => {
             console.error('Не удалось загрузить header:', error);
         });
-    document.addEventListener("DOMContentLoaded", function () {
-        const sessionId = localStorage.getItem("sessionId");
-        if (!sessionId) {
-            document.getElementById("username-display").textContent = "Guest";
-            return;
-        }
 
-        fetch('/user/getName', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Session-Id': sessionId // кастомный заголовок с sessionId
-            }
-        })
-            .then(res => {
-                if (!res.ok) throw new Error("Ошибка при получении имени");
-                return res.text();
-            })
-            .then(name => {
-                console.log("Полученное имя пользователя:", name); // 🔷 Лог
-                document.getElementById("username-display").textContent = name;
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById("username-display").textContent = "Guest";
-            });
-    });
+
 
 
 </script>
+<script type="module" src="/js/header.js"></script>
 </body>
 </html>
