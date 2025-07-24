@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RequestMapping("/movie")
 @RestController()
@@ -82,4 +83,12 @@ public class MovieController {
         logger.info("Get a request to delete a movie {}",movieRepository.getById(id).getTitle());
         movieServiceImpl.deleteMovie(id);
     }
-}
+    @GetMapping("/search")
+    public List<MovieDTO> search(@RequestParam String title){
+    logger.info("Get a request to find a movie with title => {}" ,title);
+       List<MovieEntity> movieEntityList = movieServiceImpl.search(title);
+       List<MovieDTO> movieDTOList = movieEntityList.stream()
+               .map(MovieConverter::toDto)
+               .toList();
+       return movieDTOList;
+    }}

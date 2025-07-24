@@ -69,3 +69,32 @@ fetch('/fragments/header.html')
     .catch(error => {
         console.error('Не удалось загрузить header:', error);
     });
+document.getElementById("searchBtn").addEventListener("click", () => {
+    const query = document.getElementById("searchInput").value.trim();
+
+    if (query === "") {
+        // Если пусто — показываем все
+        fetch("/movie/all")
+            .then(response => response.json())
+            .then(movies => {
+                allMovies = movies;
+                currentPage = 1;
+                renderPage(currentPage);
+            });
+    } else {
+        fetch(`/movie/search?title=${encodeURIComponent(query)}`)
+            .then(response => {
+                if (!response.ok) throw new Error("Ошибка поиска");
+                return response.json();
+            })
+            .then(movies => {
+                allMovies = movies;
+                currentPage = 1;
+                renderPage(currentPage);
+            })
+            .catch(err => {
+                document.getElementById("moviesContainer").innerHTML = "<p>Ошибка поиска 😢</p>";
+                console.error("Ошибка поиска:", err);
+            });
+    }
+});

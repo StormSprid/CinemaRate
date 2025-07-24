@@ -9,54 +9,16 @@
 </head>
 <body>
 <div id="header-placeholder"></div>
-
+<div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Поиск фильма по названию..." />
+    <button id="searchBtn">Поиск</button>
+</div>
 
 <div class="movie-list" id="moviesContainer"></div>
 
-<script>
-    fetch("/movie/all")
-        .then(response => response.json())
-        .then(movies => {
-            const container = document.getElementById("moviesContainer");
-            container.innerHTML = "";
-
-            if (movies.length === 0) {
-                container.innerHTML = "<p>Нет фильмов в базе.</p>";
-                return;
-            }
-
-            movies.forEach(movie => {
-                const div = document.createElement("div");
-                div.className = "movie-card";
-                div.innerHTML = `
-                    <h2 class="movie-title">
-                        <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
-                    </h2>
-                    <div class="movie-year">${movie.year}</div>
-                    <div class="movie-description">${movie.description}</div>
-                `;
-                container.appendChild(div);
-            });
-        })
-        .catch(error => {
-            const container = document.getElementById("moviesContainer");
-            container.innerHTML = "<p>Ошибка загрузки данных 😢</p>";
-            console.error("Ошибка:", error);
-        });
-
-    fetch('/fragments/header.html')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('header-placeholder').innerHTML = html;
-        })
-        .catch(error => {
-            console.error('Не удалось загрузить header:', error);
-        });
 
 
-
-
-</script>
+<script src="js/admin.js"></script>
 <script type="module" src="/js/header.js"></script>
 </body>
 </html>
