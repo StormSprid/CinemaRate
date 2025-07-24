@@ -26,7 +26,7 @@ public class MovieController {
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
 
-    MigrationProcessor migrationProcessor;
+    private final MigrationProcessor migrationProcessor;
 
     private final MovieRepository movieRepository;
 
@@ -39,10 +39,11 @@ public class MovieController {
                 .orElseThrow(() -> new RuntimeException("Movie not found"));
         return MovieConverter.toDto(movie);
     }
-    @GetMapping("/migration")
-    public void migrateDb(){
+    @PostMapping("/migration")
+    public ResponseEntity<String> migrateDb(){
         logger.info("Migration from CSV file has been started");
         migrationProcessor.executeMigration("imdb_film_data.csv");
+        return  ResponseEntity.ok("Migration Started");
     }
     @GetMapping("/all")
     public List<MovieEntity> getAllMovies(){
