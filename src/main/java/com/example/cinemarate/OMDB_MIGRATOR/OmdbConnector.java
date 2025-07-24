@@ -14,7 +14,7 @@ public class OmdbConnector {
     private final String PATH = "http://www.omdbapi.com/?apikey=";
     private final RestTemplate restTemplate;
 
-    String movie_id = "tt0111161";
+
 
     public OmdbConnector(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -25,15 +25,9 @@ public class OmdbConnector {
         return PATH + API_KEY + "&i=" + id;
     }
 
-    public void testLinks(){
-        List<String> ms = CsvParser.getListOfFilmTitles("imdb_film_data.csv");
-        for(String m : ms){
-            System.out.println(createLink(m));
-        }
-    }
+
     public OmdbMovieDTO fetchMovieById(String id){
         String url = createLink(id);
-        System.out.println(url);
         return restTemplate.getForObject(url,OmdbMovieDTO.class);
     }
 

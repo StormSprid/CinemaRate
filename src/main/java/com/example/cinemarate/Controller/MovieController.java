@@ -92,4 +92,15 @@ public class MovieController {
                .map(MovieConverter::toDto)
                .toList();
        return movieDTOList;
-    }}
+    }
+//
+//    @GetMapping("/{id}/rating")
+//    public ResponseEntity<Double> getMeanRating(@PathVariable Long id){
+//        MovieEntity movie = movieRepository.findById(id).orElseThrow();
+//        logger.info("Get a request to get a mean rating to movie: {}",movie);
+//        Double rating =  movie.getMeanRating();
+//        return ResponseEntity.ok(rating);
+//    }
+
+
+}

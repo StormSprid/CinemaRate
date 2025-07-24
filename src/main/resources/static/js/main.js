@@ -21,6 +21,7 @@ function renderPage(page) {
         div.innerHTML = `
             <h2 class="movie-title">
                 <a href="movie.html?id=${movie.id}">${movie.title}</a>
+                <span class="movie-rating">⭐ ${movie.meanRating ?? '–'}</span>
             </h2>
             <div class="movie-year">${movie.year}</div>
             <div class="movie-description">${movie.description}</div>
@@ -32,6 +33,7 @@ function renderPage(page) {
     document.getElementById("prevBtn").classList.toggle("disabled", currentPage === 1);
     document.getElementById("nextBtn").classList.toggle("disabled", end >= allMovies.length);
 }
+
 
 function setupPagination() {
     document.getElementById("prevBtn").addEventListener("click", () => {
