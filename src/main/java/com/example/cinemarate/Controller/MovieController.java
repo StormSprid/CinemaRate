@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +29,7 @@ public class MovieController {
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
 
-    MigrationProcessor migrationProcessor;
+    private final MigrationProcessor migrationProcessor;
 
     private final MovieRepository movieRepository;
 
@@ -39,15 +42,24 @@ public class MovieController {
                 .orElseThrow(() -> new RuntimeException("Movie not found"));
         return MovieConverter.toDto(movie);
     }
-    @GetMapping("/migration")
-    public void migrateDb(){
+    @PostMapping("/migration")
+    public ResponseEntity<String> migrateDb(){
         logger.info("Migration from CSV file has been started");
         migrationProcessor.executeMigration("imdb_film_data.csv");
+        return  ResponseEntity.ok("Migration Started");
     }
     @GetMapping("/all")
     public List<MovieEntity> getAllMovies(){
         logger.info("Get a request to get all movies");
         return movieRepository.findAll();
+    }
+    @GetMapping("/all/page")
+    public Page<MovieEntity> getAllMoviesPage(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "3") int size
+                                              ){
+        Pageable pageable = PageRequest.of(page,size);
+        logger.info("Get a request to get all movies by pages {},{}",page,size);
+        return movieServiceImpl.findAllPageable(pageable);
     }
     @PostMapping("/create")
     public ResponseEntity<MovieEntity> createMovie(@RequestBody MovieEntity movie){
@@ -91,4 +103,15 @@ public class MovieController {
                .map(MovieConverter::toDto)
                .toList();
        return movieDTOList;
-    }}
+    }
+//
+//    @GetMapping("/{id}/rating")
+//    public ResponseEntity<Double> getMeanRating(@PathVariable Long id){
+//        MovieEntity movie = movieRepository.findById(id).orElseThrow();
+//        logger.info("Get a request to get a mean rating to movie: {}",movie);
+//        Double rating =  movie.getMeanRating();
+//        return ResponseEntity.ok(rating);
+//    }
+
+
+}

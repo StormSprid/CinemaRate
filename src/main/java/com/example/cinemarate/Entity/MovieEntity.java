@@ -103,6 +103,7 @@ public class MovieEntity {
             }
             meanRating =  (double) Math.round((double) sum / reviews.size() * 100) / 100;
         }
+        System.out.println(meanRating+"<<<<<<<<<<<<<<<<<<<");
             return meanRating;
         }
 

@@ -6,6 +6,8 @@ import com.example.cinemarate.Service.MovieService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -100,6 +102,12 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<MovieEntity> search(String title) {
         return movieRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    @Override
+    public Page<MovieEntity> findAllPageable(Pageable pageable) {
+        return movieRepository.findAll(pageable);
+
     }
 
 

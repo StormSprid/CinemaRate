@@ -21,6 +21,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     public ReviewEntity createReview(ReviewDTO reviewDTO, MovieEntity movie) {
         ReviewEntity review = ReviewEntity.create(reviewDTO.getRating(),reviewDTO.getText(),movie,userRepository.findByUsername(reviewDTO.getUsername()).orElseThrow());
+        movie.resetMeanRating();
         return reviewRepository.save(review);
 
     }

@@ -30,7 +30,7 @@ function logout() {
     })
         .then(response => {
             if (response.ok) {
-                sessionStorage.removeItem("uuid");
+                sessionStorage.removeItem("sessionId");
                 window.location.href = "/login.html";
             } else {
                 alert("Ошибка при выходе");

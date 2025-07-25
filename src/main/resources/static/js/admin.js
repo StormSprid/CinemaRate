@@ -1,3 +1,5 @@
+import { performMigration } from './migrate.js';
+
 // Загрузка всех фильмов при открытии страницы
 function loadAllMovies() {
     fetch("/movie/all")
@@ -37,6 +39,13 @@ function loadHeader() {
         .then(response => response.text())
         .then(html => {
             document.getElementById('header-placeholder').innerHTML = html;
+            document.getElementById("migrateBtn").addEventListener("click", () => {
+                console.log("Нажата кнопка миграции");
+                performMigration(
+                    () => alert("Миграция завершена!"),
+                    () => alert("Ошибка миграции!")
+                );
+            });
         })
         .catch(error => {
             console.error('Не удалось загрузить header:', error);
@@ -94,4 +103,5 @@ document.addEventListener("DOMContentLoaded", () => {
     loadAllMovies();
     loadHeader();
     setupSearch();
+
 });

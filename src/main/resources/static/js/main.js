@@ -1,16 +1,31 @@
-let currentPage = 1;
+let currentPage = 0; // нумерация с 0
 const pageSize = 6;
-let allMovies = [];
+let totalPages = 1;
 
-function renderPage(page) {
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    const movies = allMovies.slice(start, end);
+function fetchAndRenderPage(page) {
+    fetch(`/movie/all/page?page=${page}&size=${pageSize}`)
+        .then(response => {
+            if (!response.ok) throw new Error("Ошибка загрузки");
+            return response.json();
+        })
+        .then(data => {
+            renderPage(data.content); // фильмы в поле content
+            totalPages = data.totalPages;
+            document.getElementById("pageInfo").textContent = `Страница ${page + 1} из ${totalPages}`;
+            document.getElementById("prevBtn").classList.toggle("disabled", page === 0);
+            document.getElementById("nextBtn").classList.toggle("disabled", page + 1 >= totalPages);
+        })
+        .catch(error => {
+            document.getElementById("moviesContainer").innerHTML = "<p>Ошибка загрузки фильмов 😢</p>";
+            console.error("Ошибка:", error);
+        });
+}
 
+function renderPage(movies) {
     const container = document.getElementById("moviesContainer");
     container.innerHTML = "";
 
-    if (movies.length === 0) {
+    if (!movies || movies.length === 0) {
         container.innerHTML = "<p>Нет фильмов на этой странице.</p>";
         return;
     }
@@ -21,80 +36,67 @@ function renderPage(page) {
         div.innerHTML = `
             <h2 class="movie-title">
                 <a href="movie.html?id=${movie.id}">${movie.title}</a>
+                <span class="movie-rating">⭐ ${movie.meanRating ?? '–'}</span>
             </h2>
             <div class="movie-year">${movie.year}</div>
             <div class="movie-description">${movie.description}</div>
         `;
         container.appendChild(div);
     });
-
-    document.getElementById("pageInfo").textContent = `Страница ${currentPage}`;
-    document.getElementById("prevBtn").classList.toggle("disabled", currentPage === 1);
-    document.getElementById("nextBtn").classList.toggle("disabled", end >= allMovies.length);
 }
 
 function setupPagination() {
     document.getElementById("prevBtn").addEventListener("click", () => {
-        if (currentPage > 1) {
+        if (currentPage > 0) {
             currentPage--;
-            renderPage(currentPage);
+            fetchAndRenderPage(currentPage);
         }
     });
 
     document.getElementById("nextBtn").addEventListener("click", () => {
-        if ((currentPage * pageSize) < allMovies.length) {
+        if (currentPage + 1 < totalPages) {
             currentPage++;
-            renderPage(currentPage);
+            fetchAndRenderPage(currentPage);
         }
     });
 }
 
-fetch("/movie/all")
-    .then(response => response.json())
-    .then(movies => {
-        allMovies = movies;
-        renderPage(currentPage);
-        setupPagination();
-    })
-    .catch(error => {
-        document.getElementById("moviesContainer").innerHTML = "<p>Ошибка загрузки фильмов 😢</p>";
-        console.error("Ошибка:", error);
-    });
+// Начальная инициализация
+document.addEventListener("DOMContentLoaded", () => {
+    setupPagination();
+    fetchAndRenderPage(currentPage);
 
-fetch('/fragments/header.html')
-    .then(response => response.text())
-    .then(html => {
-        document.getElementById('header-placeholder').innerHTML = html;
-    })
-    .catch(error => {
-        console.error('Не удалось загрузить header:', error);
-    });
-document.getElementById("searchBtn").addEventListener("click", () => {
-    const query = document.getElementById("searchInput").value.trim();
+    fetch('/fragments/header.html')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('header-placeholder').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Не удалось загрузить header:', error);
+        });
 
-    if (query === "") {
-        // Если пусто — показываем все
-        fetch("/movie/all")
-            .then(response => response.json())
-            .then(movies => {
-                allMovies = movies;
-                currentPage = 1;
-                renderPage(currentPage);
-            });
-    } else {
-        fetch(`/movie/search?title=${encodeURIComponent(query)}`)
-            .then(response => {
-                if (!response.ok) throw new Error("Ошибка поиска");
-                return response.json();
-            })
-            .then(movies => {
-                allMovies = movies;
-                currentPage = 1;
-                renderPage(currentPage);
-            })
-            .catch(err => {
-                document.getElementById("moviesContainer").innerHTML = "<p>Ошибка поиска 😢</p>";
-                console.error("Ошибка поиска:", err);
-            });
-    }
+    document.getElementById("searchBtn").addEventListener("click", () => {
+        const query = document.getElementById("searchInput").value.trim();
+
+        if (query === "") {
+            currentPage = 0;
+            fetchAndRenderPage(currentPage);
+        } else {
+            fetch(`/movie/search?title=${encodeURIComponent(query)}`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Ошибка поиска");
+                    return response.json();
+                })
+                .then(movies => {
+                    renderPage(movies);
+                    document.getElementById("pageInfo").textContent = `Найдено ${movies.length} результатов`;
+                    document.getElementById("prevBtn").classList.add("disabled");
+                    document.getElementById("nextBtn").classList.add("disabled");
+                })
+                .catch(err => {
+                    document.getElementById("moviesContainer").innerHTML = "<p>Ошибка поиска 😢</p>";
+                    console.error("Ошибка поиска:", err);
+                });
+        }
+    });
 });
