@@ -32,6 +32,8 @@ public class MovieEntity {
     @Transient
     private double meanRating = -1;
 
+    private int views = 0;
+
 
     public static MovieEntity create(String title,String description,int year,String posterUrl){
 
@@ -44,7 +46,11 @@ public class MovieEntity {
      return m;
     }
 
+    public void increaseView(){
+        this.views++;
 
+
+    }
 
     public void setTitle(String title) {
         if(title.isBlank()){

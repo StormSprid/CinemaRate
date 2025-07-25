@@ -16,5 +16,6 @@ public interface MovieService {
    MovieEntity updateMovieYear(Long id,String newYear);
    List<MovieEntity> search(String title);
    Page<MovieEntity> findAllPageable(Pageable pageable);
+   MovieEntity getMovie(Long id);
 
 }

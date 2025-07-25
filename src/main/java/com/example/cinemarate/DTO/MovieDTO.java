@@ -15,4 +15,5 @@ public class MovieDTO {
     private String posterUrl;
     private double meanRating;
     private List<ReviewDTO> reviews;
+    private int views;
 }

@@ -36,10 +36,9 @@ public class MovieController {
     private final MovieServiceImpl movieServiceImpl;
 
     @GetMapping("/{id}")
-    public MovieDTO getMovie(@PathVariable String id) {
+    public MovieDTO getMovie(@PathVariable Long id) {
         logger.info("Get a request to a film with id {}", id);
-        MovieEntity movie = movieRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        MovieEntity movie = movieServiceImpl.getMovie(id);
         return MovieConverter.toDto(movie);
     }
     @PostMapping("/migration")

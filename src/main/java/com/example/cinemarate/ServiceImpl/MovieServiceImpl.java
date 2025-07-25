@@ -5,6 +5,7 @@ import com.example.cinemarate.Repository.MovieRepository;
 import com.example.cinemarate.Service.MovieService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,16 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
 
 
-    @Autowired
-    public MovieServiceImpl(MovieRepository movieRepository) {
-        this.movieRepository = movieRepository;
 
-    }
 
     @Override
     public MovieEntity createMovie(MovieEntity movie) {
@@ -108,6 +106,16 @@ public class MovieServiceImpl implements MovieService {
     public Page<MovieEntity> findAllPageable(Pageable pageable) {
         return movieRepository.findAll(pageable);
 
+    }
+
+    @Override
+    public MovieEntity getMovie(Long id) {
+        MovieEntity movie = movieRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        movie.increaseView();
+
+        movieRepository.save(movie);
+        return movie;
     }
 
 

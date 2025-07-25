@@ -38,12 +38,14 @@ function renderPage(movies) {
                 <a href="movie.html?id=${movie.id}">${movie.title}</a>
                 <span class="movie-rating">⭐ ${movie.meanRating ?? '–'}</span>
             </h2>
-            <div class="movie-year">${movie.year}</div>
+            <div class="movie-year">Год: ${movie.year}</div>
             <div class="movie-description">${movie.description}</div>
+            <div class="movie-views">👁️: ${movie.views ?? 0}</div>
         `;
         container.appendChild(div);
     });
 }
+
 
 function setupPagination() {
     document.getElementById("prevBtn").addEventListener("click", () => {
