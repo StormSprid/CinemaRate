@@ -33,9 +33,10 @@ public class MovieEntity {
     private double meanRating = -1;
 
     private int views = 0;
+    private MovieStatus status = MovieStatus.PENDING;
 
 
-    public static MovieEntity create(String title,String description,int year,String posterUrl){
+    public static MovieEntity create(String title,String description,int year,String posterUrl) {
 
         MovieEntity m = new MovieEntity();
         m.setTitle(title);
@@ -43,8 +44,9 @@ public class MovieEntity {
         m.setYear(year);
         m.setPosterUrl(posterUrl);
 
-     return m;
+        return m;
     }
+
 
     public void increaseView(){
         this.views++;
