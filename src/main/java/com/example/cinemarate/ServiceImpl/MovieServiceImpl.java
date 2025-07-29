@@ -1,11 +1,17 @@
 package com.example.cinemarate.ServiceImpl;
 
+import com.example.cinemarate.Controller.MovieController;
+import com.example.cinemarate.Converter.MovieConverter;
+import com.example.cinemarate.DTO.MovieDTO;
 import com.example.cinemarate.Entity.MovieEntity;
+import com.example.cinemarate.Entity.MovieStatus;
 import com.example.cinemarate.Repository.MovieRepository;
 import com.example.cinemarate.Service.MovieService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +26,16 @@ public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(MovieServiceImpl.class);
 
 
 
     @Override
     public MovieEntity createMovie(MovieEntity movie) {
         if (movieRepository.findByTitle(movie.getTitle()).isPresent()){
-            throw new EntityExistsException(String.format("Movie with Title %d is already exist",movie.getTitle()));
+            String msg = String.format("Movie with Title %s is already exist",movie.getTitle());
+            logger.warn(msg);
+            throw new EntityExistsException(msg);
         }
         movieRepository.save(movie);
 
@@ -117,6 +126,24 @@ public class MovieServiceImpl implements MovieService {
         movieRepository.save(movie);
         return movie;
     }
+
+    @Override
+    public List<MovieDTO> getMoviesWithStatus(String status) {
+        return movieRepository.getMoviesByStatus(status).stream().map(MovieConverter::toDto).toList();
+    }
+
+    @Override
+    public MovieEntity changeMovieStatus(Long id, String status) {
+        MovieEntity movie = movieRepository.findById(id).orElseThrow();
+        try {
+
+
+            movie.setStatus(MovieStatus.valueOf(status.toUpperCase()));
+            return movieRepository.save(movie);
+        }catch (IllegalArgumentException e){
+
+            throw new IllegalArgumentException(e.getMessage());
+        }   }
 
 
 }

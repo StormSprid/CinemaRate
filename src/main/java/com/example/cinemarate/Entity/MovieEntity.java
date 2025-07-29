@@ -33,6 +33,8 @@ public class MovieEntity {
     private double meanRating = -1;
 
     private int views = 0;
+    @Enumerated(EnumType.STRING)
+    @Setter
     private MovieStatus status = MovieStatus.PENDING;
 
 

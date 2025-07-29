@@ -103,14 +103,19 @@ public class MovieController {
                .toList();
        return movieDTOList;
     }
-//
-//    @GetMapping("/{id}/rating")
-//    public ResponseEntity<Double> getMeanRating(@PathVariable Long id){
-//        MovieEntity movie = movieRepository.findById(id).orElseThrow();
-//        logger.info("Get a request to get a mean rating to movie: {}",movie);
-//        Double rating =  movie.getMeanRating();
-//        return ResponseEntity.ok(rating);
-//    }
 
 
-}
+    @GetMapping("filter")
+    public List<MovieDTO> getListOfMoviesWithStatus(@RequestParam String status) {
+        logger.info("Get a request to get all films with status = {} ",status.toUpperCase());
+        return movieServiceImpl.getMoviesWithStatus(status);
+
+    }
+    @PostMapping("/change-status")
+    public ResponseEntity<String> changeStatus(@RequestParam Long id,@RequestParam String status){
+        logger.info("Get a request to change status film: {}  with status = {} }",id,status.toUpperCase());
+        movieServiceImpl.changeMovieStatus(id,status);
+        return ResponseEntity.ok("Status has been changed");
+    }
+
+    }
