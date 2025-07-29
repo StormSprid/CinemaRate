@@ -64,14 +64,18 @@
                     const div = document.createElement("div");
                     div.className = "movie-card";
                     div.innerHTML = `
-                    <h2 class="movie-title">
-                        <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
-                    </h2>
-                    <div class="movie-year">${movie.year}</div>
-                    <div class="movie-description">${movie.description}</div>
-                `;
+    <h2 class="movie-title">
+        <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
+    </h2>
+    <div class="movie-year">${movie.year}</div>
+    <div class="movie-description">${movie.description}</div>
+  
+    </div>
+`;
                     container.appendChild(div);
                 });
+
+
             })
             .catch(error => {
                 console.error("Ошибка загрузки фильмов:", error);

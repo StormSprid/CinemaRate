@@ -51,7 +51,17 @@
 
             <!-- Средняя оценка -->
             <div class="rating" id="meanRating"></div>
-
+            <!--статус -->
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <div id="statusLabel">Статус: ...</div>
+                    <select id="statusSelect" style="margin-left: 10px;">
+                        <option value="PENDING">PENDING</option>
+                        <option value="APPROVED">APPROVED</option>
+                        <option value="REJECTED">REJECTED</option>
+                    </select>
+                </div>
+            </div>
             <!-- Кнопки управления -->
             <div style="margin-top: 10px; display: flex; gap: 10px;">
                 <a id="updateLink" class="header-btn add-button">Обновить фильм</a>
@@ -98,6 +108,27 @@
                 document.getElementById("year").textContent = "Год выпуска: " + data.year;
                 document.getElementById("description").textContent = data.description;
                 document.getElementById("poster").src = data.posterUrl || "/static/images/no-image.png";
+                document.getElementById("statusLabel").textContent = "Статус: " + data.status;
+                document.getElementById("statusSelect").value = data.status;
+
+                document.getElementById("statusSelect").addEventListener("change", () => {
+                    const newStatus = document.getElementById("statusSelect").value;
+
+                    fetch(`/movie/change-status?id=${movieId}&status=${newStatus}`, {
+                        method: "POST"
+                    })
+                        .then(response => {
+                            if (!response.ok) throw new Error("Ошибка при обновлении статуса");
+                            return response.text();
+                        })
+                        .then(msg => {
+                            alert("Статус обновлён: " + msg);
+                            document.getElementById("statusLabel").textContent = "Статус: " + newStatus;
+                        })
+                        .catch(error => {
+                            alert("Ошибка: " + error.message);
+                        });
+                });
 
                 let sum = 0;
                 data.reviews.forEach(r => sum += r.rating);

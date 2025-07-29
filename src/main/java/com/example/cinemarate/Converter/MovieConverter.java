@@ -16,6 +16,7 @@ public class MovieConverter {
         dto.setPosterUrl(movie.getPosterUrl());
         dto.setMeanRating(movie.getMeanRating());
         dto.setViews(movie.getViews());
+        dto.setStatus(movie.getStatus());
 
         dto.setReviews(movie.getReviews().stream().map(review -> {
             ReviewDTO reviewDTO = new ReviewDTO();
