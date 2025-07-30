@@ -4,6 +4,7 @@ import com.example.cinemarate.Entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -16,20 +17,23 @@ public class UserDetailsImpl implements UserDetails {
     private String username;
     private String email;
     private String password;
-
+    private Collection<? extends GrantedAuthority> authorities;
     public static UserDetailsImpl build(UserEntity userEntity) {
+        List<GrantedAuthority> authorities = List.of(
+                new SimpleGrantedAuthority("ROLE_" + userEntity.getRole().name())
+        );
         return new UserDetailsImpl(
                 userEntity.getId(),
                 userEntity.getUsername(),
                 userEntity.getEmail(),
-                userEntity.getPassword()
-
+                userEntity.getPassword(),
+                authorities
         );
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return authorities;
     }
 
     @Override

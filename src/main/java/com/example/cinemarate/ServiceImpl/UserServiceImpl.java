@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         UserEntity userToCreate = converter.fromDto(userDTO);
         if(userDTO.getUsername().contains("admin")){
-            userToCreate.setRole(Role.Admin);
+            userToCreate.setRole(Role.ADMIN);
         }
         repository.save(userToCreate);
         return userDTO;
