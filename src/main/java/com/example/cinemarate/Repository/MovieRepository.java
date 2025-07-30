@@ -26,6 +26,9 @@ public interface MovieRepository extends JpaRepository<MovieEntity, Long> {
     List<MovieEntity> findByTitleContainingIgnoreCase(String title);
 
     @Query(nativeQuery = true,value = "SELECT * from movie WHERE status = :status")
+    Page<MovieEntity> getMoviesByStatus(@Param("status") String status,Pageable pageable);
+
+    @Query(nativeQuery = true,value = "SELECT * from movie WHERE status = :status")
     List<MovieEntity> getMoviesByStatus(@Param("status") String status);
 
 

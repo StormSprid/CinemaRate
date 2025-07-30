@@ -30,30 +30,32 @@
             });
     }
 
+    let currentPage = 0;
+    const pageSize = 6;
+    let totalPages = 1;
 
-    function loadMoviesWithFilter(status = "ALL", title = "") {
+    function loadMoviesWithFilter(status = "ALL", title = "", page = 0) {
         let url = "";
 
-        // Если пользователь ищет по названию, игнорируем фильтр
         if (title && title.length > 0) {
             const params = new URLSearchParams();
             params.append("title", title);
-            url = `/movie/search?${params.toString()}`; // ← теперь будет правильно
-        }
-        // Иначе фильтруем по статусу
-        else if (status === "ALL") {
-            url = "/movie/all";
+            url = `/movie/search?${params.toString()}`;
         } else {
             const params = new URLSearchParams();
-            params.append("status", status);
+            if (status !== "ALL") params.append("status", status);
+            params.append("page", page);
+            params.append("size", pageSize);
             url = `/movie/filter?${params.toString()}`;
         }
 
         fetch(url)
             .then(response => response.json())
-            .then(movies => {
+            .then(data => {
                 const container = document.getElementById("moviesContainer");
                 container.innerHTML = "";
+
+                const movies = Array.isArray(data.content) ? data.content : (Array.isArray(data) ? data : []);
 
                 if (movies.length === 0) {
                     container.innerHTML = "<p>Фильмы не найдены 😢</p>";
@@ -64,23 +66,45 @@
                     const div = document.createElement("div");
                     div.className = "movie-card";
                     div.innerHTML = `
-    <h2 class="movie-title">
-        <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
-    </h2>
-    <div class="movie-year">${movie.year}</div>
-    <div class="movie-description">${movie.description}</div>
-  
-    </div>
-`;
+                    <h2 class="movie-title">
+                        <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
+                    </h2>
+                    <div class="movie-year">${movie.year}</div>
+                    <div class="movie-description">${movie.description}</div>
+                `;
                     container.appendChild(div);
                 });
 
+                // пагинация
+                totalPages = data.totalPages;
+                currentPage = data.number;
 
+                updatePagination(status, title);
             })
             .catch(error => {
                 console.error("Ошибка загрузки фильмов:", error);
                 document.getElementById("moviesContainer").innerHTML = "<p>Ошибка загрузки данных 😢</p>";
             });
+    }
+    function updatePagination(status, title) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = `
+        <button id="prevPage" ${currentPage === 0 ? "disabled" : ""}>Предыдущая</button>
+        <span>Страница ${currentPage + 1} из ${totalPages}</span>
+        <button id="nextPage" ${currentPage + 1 >= totalPages ? "disabled" : ""}>Следующая</button>
+    `;
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 0) {
+                loadMoviesWithFilter(status, title, currentPage - 1);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage + 1 < totalPages) {
+                loadMoviesWithFilter(status, title, currentPage + 1);
+            }
+        });
     }
 
 
@@ -109,7 +133,7 @@
 
     // Инициализация при загрузке страницы
     document.addEventListener("DOMContentLoaded", () => {
-        loadMoviesWithFilter(); // загружает все
+
         loadHeader();           // теперь внутри loadHeader вызовется setupSearch()
     });
 

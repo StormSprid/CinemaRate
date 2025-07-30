@@ -1,6 +1,5 @@
 package com.example.cinemarate.ServiceImpl;
 
-import com.example.cinemarate.Controller.MovieController;
 import com.example.cinemarate.Converter.MovieConverter;
 import com.example.cinemarate.DTO.MovieDTO;
 import com.example.cinemarate.Entity.MovieEntity;
@@ -12,7 +11,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -127,9 +125,12 @@ public class MovieServiceImpl implements MovieService {
         return movie;
     }
 
+
+
     @Override
-    public List<MovieDTO> getMoviesWithStatus(String status) {
-        return movieRepository.getMoviesByStatus(status).stream().map(MovieConverter::toDto).toList();
+    public Page<MovieDTO> getMoviesWithStatus(String status, Pageable pageable) {
+        return movieRepository.getMoviesByStatus(status, pageable)
+                .map(MovieConverter::toDto);
     }
 
     @Override

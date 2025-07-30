@@ -3,7 +3,8 @@ const pageSize = 6;
 let totalPages = 1;
 
 function fetchAndRenderPage(page) {
-    fetch(`/movie/all/page?page=${page}&size=${pageSize}`)
+    ///movie/all/page?page=${page}&size=${pageSize}
+    fetch(`/movie/for-user`)
         .then(response => {
             if (!response.ok) throw new Error("Ошибка загрузки");
             return response.json();

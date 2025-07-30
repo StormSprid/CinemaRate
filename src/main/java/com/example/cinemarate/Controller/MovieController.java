@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -95,8 +96,11 @@ public class MovieController {
         movieServiceImpl.deleteMovie(id);
     }
     @GetMapping("/search")
-    public List<MovieDTO> search(@RequestParam String title){
+    public List<MovieDTO> search(@RequestParam(required = false) String title){
     logger.info("Get a request to find a movie with title => {}" ,title);
+    if(title.isEmpty()){
+        return movieRepository.findAll().stream().map(MovieConverter::toDto).toList();
+    }
        List<MovieEntity> movieEntityList = movieServiceImpl.search(title);
        List<MovieDTO> movieDTOList = movieEntityList.stream()
                .map(MovieConverter::toDto)
@@ -104,12 +108,31 @@ public class MovieController {
        return movieDTOList;
     }
 
+    @GetMapping("/for-user")
+    public Page<MovieDTO> getListOfMoviesToUser(
+            @RequestParam (defaultValue = "0") int page,
+            @RequestParam (defaultValue = "6") int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+        logger.info("Get a request to get all films with status = APPROVED(USER REQUEST) ");
+        return movieServiceImpl.getMoviesWithStatus("APPROVED",pageable);
+    }
+
 
     @GetMapping("filter")
-    public List<MovieDTO> getListOfMoviesWithStatus(@RequestParam String status) {
+    public Page<MovieDTO> getListOfMoviesWithStatus(@RequestParam(defaultValue = "ALL") String status,
+    @RequestParam (defaultValue = "0") int page,
+    @RequestParam (defaultValue = "6") int size
+    ) {
+        Pageable pageable = PageRequest.of(page,size);
         logger.info("Get a request to get all films with status = {} ",status.toUpperCase());
-        return movieServiceImpl.getMoviesWithStatus(status);
-
+        if(status.equalsIgnoreCase("ALL")){
+                 Page<MovieEntity> pageEntity = movieServiceImpl.findAllPageable(pageable);
+                 Page<MovieDTO> pageDTO = pageEntity.map(MovieConverter::toDto);
+            return pageDTO;
+        }else {
+            return movieServiceImpl.getMoviesWithStatus(status, pageable);
+        }
     }
     @PostMapping("/change-status")
     public ResponseEntity<String> changeStatus(@RequestParam Long id,@RequestParam String status){

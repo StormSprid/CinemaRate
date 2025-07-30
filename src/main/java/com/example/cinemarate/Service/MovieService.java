@@ -18,7 +18,7 @@ public interface MovieService {
    List<MovieEntity> search(String title);
    Page<MovieEntity> findAllPageable(Pageable pageable);
    MovieEntity getMovie(Long id);
-   List<MovieDTO> getMoviesWithStatus(String status);
+   Page<MovieDTO> getMoviesWithStatus(String status,Pageable pageable);
    MovieEntity changeMovieStatus(Long id,String status);
 
 }
