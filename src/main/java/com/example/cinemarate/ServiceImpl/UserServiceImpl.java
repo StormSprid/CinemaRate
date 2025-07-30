@@ -6,13 +6,17 @@ import com.example.cinemarate.Entity.Role;
 import com.example.cinemarate.Entity.UserEntity;
 import com.example.cinemarate.Exception.CustomException;
 import com.example.cinemarate.Exception.ErrorModel;
-import com.example.cinemarate.Repository.SessionRepository;
+//import com.example.cinemarate.Repository.SessionRepository;
 import com.example.cinemarate.Repository.UserRepository;
-import com.example.cinemarate.Security.Session.Session;
+//import com.example.cinemarate.Security.Session.Session;
+import com.example.cinemarate.Security.jwt.UserDetailsImpl;
 import com.example.cinemarate.Service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,12 +25,12 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserConverter converter;
 
     private UserRepository repository;
-    private SessionRepository sessionRepository;
+//    private SessionRepository sessionRepository;
     @Override
     public UserDTO register(UserDTO userDTO) {
         Optional<UserEntity> uopt = repository.findByEmail(userDTO.getEmail());
@@ -58,9 +62,9 @@ public class UserServiceImpl implements UserService {
         if(optionalUser.isPresent()){
             Role role = optionalUser.get().getRole();
             user = converter.toDto(optionalUser);
-            Session session = new Session().issue(user.getUsername(),role);
-            sessionRepository.save(session);
-            user.setSessionId(session.getId());
+//            Session session = new Session().issue(user.getUsername(),role);
+//            sessionRepository.save(session);
+//            user.setSessionId(session.getId());
         }
         else{
             List<ErrorModel> errors = new ArrayList<>();
@@ -76,5 +80,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         repository.delete(repository.findById(id).orElseThrow());
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = repository.findByUsername(username).orElseThrow(()->new UsernameNotFoundException(
+                String.format("User %s not found",username)
+        ));
+        return UserDetailsImpl.build(userEntity);
     }
 }

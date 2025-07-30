@@ -4,7 +4,7 @@ import com.example.cinemarate.Converter.UserConverter;
 import com.example.cinemarate.DTO.UserDTO;
 import com.example.cinemarate.Entity.UserEntity;
 import com.example.cinemarate.Repository.UserRepository;
-import com.example.cinemarate.ServiceImpl.SessionServiceImpl;
+//import com.example.cinemarate.ServiceImpl.SessionServiceImpl;
 import com.example.cinemarate.ServiceImpl.UserServiceImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
@@ -29,13 +29,13 @@ public class UserController {
 
     private  final UserConverter converter;
 
-    private final SessionServiceImpl sessionService;
+//    private final SessionServiceImpl sessionService;
 
 
-    @GetMapping("/me/name")
-    public String getMyName(@RequestParam UUID uuid){
-        return sessionService.getNameById(uuid);
-    }
+//    @GetMapping("/me/name")
+//    public String getMyName(@RequestParam UUID uuid){
+//        return sessionService.getNameById(uuid);
+//    }
 
     @GetMapping("/{id}")
     public Optional<UserDTO> getUser(@PathVariable Long id) {
@@ -58,18 +58,18 @@ public class UserController {
     }
 
 
-    @GetMapping("/getName")
-    public ResponseEntity<String> getUserName(@RequestHeader("X-Session-Id") UUID id ){
-        System.out.println("Get name trigger");
-        return ResponseEntity.status(HttpStatus.OK).body(sessionService.getNameById(id));
-    }
-    @PostMapping("/logout")
-    public ResponseEntity<String> logoutUser(@RequestParam UUID uuid){
-        if(sessionService.logout(uuid)){
-            return ResponseEntity.ok("Logout successful");
-
-        } else{
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Session not found");
-        }
-    }
+//    @GetMapping("/getName")
+//    public ResponseEntity<String> getUserName(@RequestHeader("X-Session-Id") UUID id ){
+//        System.out.println("Get name trigger");
+//        return ResponseEntity.status(HttpStatus.OK).body(sessionService.getNameById(id));
+//    }
+//    @PostMapping("/logout")
+//    public ResponseEntity<String> logoutUser(@RequestParam UUID uuid){
+//        if(sessionService.logout(uuid)){
+//            return ResponseEntity.ok("Logout successful");
+//
+//        } else{
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Session not found");
+//        }
+//    }
 }
