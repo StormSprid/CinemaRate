@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,8 +19,8 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class TokenFilter extends OncePerRequestFilter {
-    public final JwtCore jwtCore;
-    public final UserDetailsService userDetailsService;
+    private final JwtCore jwtCore;
+    private final ApplicationContext context;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String jwt = null;
@@ -39,6 +40,7 @@ public class TokenFilter extends OncePerRequestFilter {
                      e.printStackTrace();
                  }
                  if(username != null && SecurityContextHolder.getContext().getAuthentication() ==null){
+                     UserDetailsService userDetailsService = context.getBean(UserDetailsService.class);
                      userDetails = userDetailsService.loadUserByUsername(username);
                      auth = new UsernamePasswordAuthenticationToken(
                              userDetails,

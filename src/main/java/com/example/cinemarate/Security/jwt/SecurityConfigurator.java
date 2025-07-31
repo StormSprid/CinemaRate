@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfiguration;
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfigurator {
-    private final UserServiceImpl userService;
     private final TokenFilter tokenFilter;
 
 
