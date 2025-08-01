@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,6 +37,14 @@ public class MovieServiceImpl implements MovieService {
             logger.warn(msg);
             throw new EntityExistsException(msg);
         }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a-> a.getAuthority().equals("ROLE_ADMIN"));
+        if(isAdmin){
+
+            movie.setStatus(MovieStatus.APPROVED);
+        }
+        logger.info(movie.toString());
         movieRepository.save(movie);
 
         return movie;

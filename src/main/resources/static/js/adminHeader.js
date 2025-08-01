@@ -1,12 +1,12 @@
 console.log("adminHeader.js успешно загружен");
 
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. Загружаем header
+    // Загружаем header
     fetch("fragments/adminHeader.html")
         .then(response => response.text())
         .then(html => {
             document.getElementById("header-placeholder").innerHTML = html;
-            initHeader(); // вызываем основную инициализацию
+            initHeader(); // инициализация
         })
         .catch(err => {
             console.error("Ошибка загрузки header:", err);
@@ -14,10 +14,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function initHeader() {
-    const uuid = sessionStorage.getItem("sessionId");
+    const jwt = sessionStorage.getItem("token");
     let userName = '';
 
-    fetch(`user/me/name?uuid=${uuid}`)
+    // Получение имени пользователя
+    fetch(`/user/me`, {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + jwt
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error(`Ошибка HTTP: ${response.status}`);
@@ -27,7 +33,10 @@ function initHeader() {
         .then(name => {
             userName = name;
             console.log('Имя пользователя:', userName);
-            document.getElementById("username-display").innerText = "Hello, " + userName + "!";
+            const usernameDisplay = document.getElementById("username-display");
+            if (usernameDisplay) {
+                usernameDisplay.innerText = "Hello, " + userName + "!";
+            }
         })
         .catch(error => {
             console.error('Ошибка при получении имени пользователя:', error);
@@ -35,48 +44,35 @@ function initHeader() {
 
     console.log("Кнопка инициализирована");
 
-    document.getElementById("migrateBtn").addEventListener("click", () => {
-        console.log("Нажата кнопка миграции");
-        const loader = document.getElementById("loader");
-        loader.style.display = "block";
+    // Обработчик кнопки миграции
+    const migrateBtn = document.getElementById("migrateBtn");
+    if (migrateBtn) {
+        migrateBtn.addEventListener("click", () => {
+            console.log("Нажата кнопка миграции");
+            const loader = document.getElementById("loader");
+            if (loader) loader.style.display = "block";
 
-        fetch("/movie/migrate", { method: "POST" })
-            .then(response => {
-                if (!response.ok) throw new Error("Ошибка миграции");
-                return response.text();
-            })
-            .then(result => {
-                console.log(result);
-                loader.style.display = "none";
-                alert("Миграция завершена!");
-            })
-            .catch(err => {
-                loader.style.display = "none";
-                alert("Ошибка миграции!");
-            });
-    });
+            fetch("/movie/migrate", { method: "POST" })
+                .then(response => {
+                    if (!response.ok) throw new Error("Ошибка миграции");
+                    return response.text();
+                })
+                .then(result => {
+                    console.log(result);
+                    if (loader) loader.style.display = "none";
+                    alert("Миграция завершена!");
+                })
+                .catch(err => {
+                    if (loader) loader.style.display = "none";
+                    alert("Ошибка миграции!");
+                });
+        });
+    }
 
-    window.logout = function logout() {
-        const uuid = sessionStorage.getItem("sessionId");
-        if (!uuid) {
-            alert("Сессия не найдена.");
-            return;
-        }
-
-        fetch(`/user/logout?uuid=${uuid}`, {
-            method: "POST"
-        })
-            .then(response => {
-                if (response.ok) {
-                    sessionStorage.removeItem("sessionId");
-                    window.location.href = "/login.html";
-                } else {
-                    alert("Ошибка при выходе");
-                }
-            })
-            .catch(error => {
-                console.error("Ошибка:", error);
-                alert("Ошибка сети при выходе");
-            });
-    };
+    // Logout
+    function logout() {
+        sessionStorage.removeItem("token");
+        window.location.href = "/login.html";
+    }
+    window.logout = logout; // доступно глобально
 }

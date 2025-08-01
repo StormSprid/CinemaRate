@@ -26,9 +26,6 @@ import java.util.Optional;
 public class UserController {
 
     private final UserRepository userRepository;
-
-    private final UserServiceImpl service;
-
     private  final UserConverter converter;
 
 
@@ -36,6 +33,10 @@ public class UserController {
     @GetMapping("/{id}")
     public Optional<UserDTO> getUser(@PathVariable Long id) {
         return Optional.ofNullable(converter.toDto(userRepository.findById(id)));
+    }
+    @GetMapping("/me")
+    public String getName(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 

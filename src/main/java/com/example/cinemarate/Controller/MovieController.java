@@ -64,6 +64,7 @@ public class MovieController {
     @PostMapping("/create")
     public ResponseEntity<MovieEntity> createMovie(@RequestBody MovieEntity movie){
         logger.info("Get a request to create a movie {}",movie.getTitle());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(movieServiceImpl.createMovie(movie));
     }
     @PutMapping("/update")

@@ -34,8 +34,11 @@ public class MovieEntity {
 
     private int views = 0;
     @Enumerated(EnumType.STRING)
+
+    @Getter
     @Setter
     private MovieStatus status = MovieStatus.PENDING;
+
 
 
     public static MovieEntity create(String title,String description,int year,String posterUrl) {
@@ -87,14 +90,19 @@ public class MovieEntity {
         this.posterUrl = posterUrl;
     }
 
+
     @Override
     public String toString() {
         return "MovieEntity{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", year=" + year + '\'' +
-                ", rating=" + getMeanRating() +
+                ", year=" + year +
+                ", posterUrl='" + posterUrl + '\'' +
+                ", reviews=" + reviews +
+                ", meanRating=" + meanRating +
+                ", views=" + views +
+                ", status=" + status +
                 '}';
     }
 

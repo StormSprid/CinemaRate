@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>403 - Не авторизован</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .error-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .error-code {
+            font-size: 100px;
+            font-weight: bold;
+            color: #ff9800;
+            margin: 0;
+        }
+
+        .error-message {
+            font-size: 20px;
+            color: #555;
+            margin: 10px 0 20px 0;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 6px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header class="main-header">
+    <div class="header-content">
+        <a href="/" class="site-title">CinemaRate</a>
+    </div>
+</header>
+
+<div class="error-container">
+    <h1 class="error-code">403</h1>
+    <p class="error-message">У вас нет доступа. Пожалуйста, войдите в систему.</p>
+    <a href="/login.html" class="back-button">Перейти к входу</a>
+</div>
+
+</body>
+</html>

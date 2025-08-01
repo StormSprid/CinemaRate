@@ -1,5 +1,6 @@
 package com.example.cinemarate.Security.jwt;
 
+import com.example.cinemarate.Exception.CustomAuthEntryPoint;
 import com.example.cinemarate.ServiceImpl.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,7 @@ import org.springframework.web.cors.CorsConfiguration;
 @RequiredArgsConstructor
 public class SecurityConfigurator {
     private final TokenFilter tokenFilter;
-
+    private final CustomAuthEntryPoint customAuthEntryPoint;
 
 
 
@@ -50,15 +51,21 @@ public class SecurityConfigurator {
                                 new CorsConfiguration().applyPermitDefaultValues())
                 )
                 .exceptionHandling(exceptions->exceptions
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .authenticationEntryPoint(customAuthEntryPoint)
                 )
                 .sessionManagement(session->session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
         .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("auth/**").permitAll()
-                .requestMatchers("/secured/**").fullyAuthenticated()
-                .requestMatchers("admin.html").hasRole("ADMIN")
+                .requestMatchers(
+                        "/",
+                        "auth/**","/index.html","/css/**",
+                        "/js/**","/images/**","/favicon.ico",
+                        "/login.html","/register.html","403.html"
+
+                ).permitAll()
+                .requestMatchers("/admin.html","/adminMovie.html","/swagger-ui/**").hasRole("ADMIN")
+                .requestMatchers("/main.html").fullyAuthenticated()
                 .anyRequest().permitAll()
         )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

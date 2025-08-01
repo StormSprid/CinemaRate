@@ -1,48 +1,38 @@
-const uuid = sessionStorage.getItem("sessionId")
+const jwt = sessionStorage.getItem("token");
 let userName = '';
 
-fetch(`user/me/name?uuid=${uuid}`)
+fetch(`/user/me`, {
+    method: "GET",
+    headers: {
+        "Authorization": "Bearer " + jwt
+    }
+})
     .then(response => {
         if (!response.ok) {
             throw new Error(`Ошибка HTTP: ${response.status}`);
         }
-        return response.text(); // так как сервер возвращает строку (имя)
+        return response.text(); // если сервер возвращает просто строку (имя)
     })
     .then(name => {
         userName = name;
         console.log('Имя пользователя:', userName);
-        document.getElementById("username-display").innerText = "Hello, " + userName + "!";
+        const usernameDisplay = document.getElementById("username-display");
+        if (usernameDisplay) {
+            usernameDisplay.innerText = "Hello, " + userName + "!";
+        }
     })
     .catch(error => {
         console.error('Ошибка при получении имени пользователя:', error);
     });
-
 // header.js
 function logout() {
-    const uuid = sessionStorage.getItem("sessionId");
-    if (!uuid) {
-        alert("Сессия не найдена.");
-        return;
-    }
 
-    fetch(`/user/logout?uuid=${uuid}`, {
-        method: "POST"
-    })
-        .then(response => {
-            if (response.ok) {
-                sessionStorage.removeItem("sessionId");
-                window.location.href = "/login.html";
-            } else {
-                alert("Ошибка при выходе");
-            }
-        })
-        .catch(error => {
-            console.error("Ошибка:", error);
-            alert("Ошибка сети при выходе");
-        });
+    sessionStorage.removeItem("token");
+
+
+
+    // Редирект на логин
+    window.location.href = "/login.html";
 }
-
-// Сделать функцию доступной глобально
 window.logout = logout;
-
 
