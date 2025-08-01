@@ -50,7 +50,7 @@
 <div class="login-container">
     <h2>Вход</h2>
     <form id="loginForm">
-        <input type="email" id="email" placeholder="Email" required />
+        <input type="text" id="username" placeholder="Username" required />
         <input type="password" id="password" placeholder="Пароль" required minlength="1" />
         <button type="submit">Войти</button>
     </form>
@@ -60,14 +60,14 @@
     document.getElementById("loginForm").addEventListener("submit", function(event) {
         event.preventDefault();
 
-        const email = document.getElementById("email").value.trim();
+        const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value.trim();
 
-        fetch("/user/login", {
+        fetch("/auth/signin", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
-                email: email,
+                username: username,
                 password: password
             })
         })
@@ -80,14 +80,14 @@
                 return response.json(); // Получаем JSON с sessionId
             })
             .then(data => {
-                if (!data || !data.sessionId) {
+                if (!data || !data.jwt) {
                     throw new Error("Сервер не вернул sessionId");
                 }
 
-                sessionStorage.setItem("sessionId", data.sessionId);
+                sessionStorage.setItem("token", data.jwt);
                 document.getElementById("message").innerHTML = `
         ✅ Вход выполнен успешно!<br>
-        <strong>Session ID:</strong> ${data.sessionId}
+        <strong>jwt :</strong> ${data.jwt}
     `;
 
                 setTimeout(() => {

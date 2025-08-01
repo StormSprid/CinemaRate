@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
@@ -43,6 +45,6 @@ public class AuthController {
     @PostMapping("/signin")
     ResponseEntity<?> signIn(@RequestBody SignInRequest signInRequest) {
        String jwt = authService.login(signInRequest);
-        return ResponseEntity.ok(jwt);
+        return ResponseEntity.ok(Map.of("jwt",jwt));
     }
 }

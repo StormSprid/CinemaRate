@@ -58,6 +58,7 @@ public class SecurityConfigurator {
         .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("auth/**").permitAll()
                 .requestMatchers("/secured/**").fullyAuthenticated()
+                .requestMatchers("admin.html").hasRole("ADMIN")
                 .anyRequest().permitAll()
         )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
