@@ -38,6 +38,21 @@
     .registration-container button:hover {
       background-color: #0056b3;
     }
+    .back-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 12px;
+      margin-top: 10px;
+      background-color: #6c757d;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .back-btn:hover {
+      background-color: #5a6268;
+    }
     .message {
       text-align: center;
       margin-top: 15px;
@@ -55,6 +70,7 @@
     <input type="password" id="password" placeholder="Пароль (мин. 8 символов)" required minlength="8" />
     <button type="submit">Зарегистрироваться</button>
   </form>
+  <a href="/login.html" class="back-btn"> Вернуться к входу</a>
   <div class="message" id="message"></div>
 </div>
 
@@ -66,7 +82,7 @@
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value.trim();
 
-    fetch("/user/registration", {
+    fetch("/auth/signup", {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({username, email, password})

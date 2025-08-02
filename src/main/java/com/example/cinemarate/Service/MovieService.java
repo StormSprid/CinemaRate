@@ -1,5 +1,6 @@
 package com.example.cinemarate.Service;
 
+import com.example.cinemarate.DTO.MovieDTO;
 import com.example.cinemarate.Entity.MovieEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,5 +17,8 @@ public interface MovieService {
    MovieEntity updateMovieYear(Long id,String newYear);
    List<MovieEntity> search(String title);
    Page<MovieEntity> findAllPageable(Pageable pageable);
+   MovieEntity getMovie(Long id);
+   Page<MovieDTO> getMoviesWithStatus(String status,Pageable pageable);
+   MovieEntity changeMovieStatus(Long id,String status);
 
 }

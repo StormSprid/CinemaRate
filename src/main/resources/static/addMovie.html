@@ -56,11 +56,12 @@
         };
 
         console.log("Отправляем данные фильма:", movie);
-
+        const jwt = sessionStorage.getItem("token");
         fetch('http://localhost:8080/movie/create', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer " + jwt
             },
             body: JSON.stringify(movie)
         })

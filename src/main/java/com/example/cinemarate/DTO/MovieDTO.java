@@ -1,5 +1,6 @@
 package com.example.cinemarate.DTO;
 
+import com.example.cinemarate.Entity.MovieStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,6 @@ public class MovieDTO {
     private String posterUrl;
     private double meanRating;
     private List<ReviewDTO> reviews;
+    private int views;
+    private MovieStatus status;
 }

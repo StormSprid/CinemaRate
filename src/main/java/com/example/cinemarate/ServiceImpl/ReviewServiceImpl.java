@@ -8,6 +8,8 @@ import com.example.cinemarate.Repository.UserRepository;
 import com.example.cinemarate.Service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +22,13 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
 
     public ReviewEntity createReview(ReviewDTO reviewDTO, MovieEntity movie) {
-        ReviewEntity review = ReviewEntity.create(reviewDTO.getRating(),reviewDTO.getText(),movie,userRepository.findByUsername(reviewDTO.getUsername()).orElseThrow());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        System.out.println(name);
+        ReviewEntity review = ReviewEntity.create(
+                reviewDTO.getRating(),
+                reviewDTO.getText(),movie,userRepository.findByUsername(name).orElseThrow(
+                        () -> new RuntimeException("User not found")));
         movie.resetMeanRating();
         return reviewRepository.save(review);
 

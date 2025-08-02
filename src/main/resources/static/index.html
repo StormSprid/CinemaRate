@@ -110,34 +110,80 @@
             setInterval(fillStarsInOrder, 1500);
         });
         function openAdminPage() {
-            const sessionId = sessionStorage.getItem("sessionId");
-            console.log(sessionId)
-            if (!sessionId) {
+            const jwt = localStorage.getItem("token");
+            console.log(jwt)
+            if (!jwt) {
                 alert("Session ID not found. Please log in first.");
                 return;
             }
 
-            fetch("http://localhost:8080/admin", {
+            fetch("http://localhost:8080/admin.html", {
                 method: "GET",
                 headers: {
-                    "sessionId": sessionId
+                    "Authorization": "Bearer " + jwt
                 }
             })
                 .then(response => {
-                    if (response.ok) {
-                        window.location.href = "/admin";
-                    } else if (response.status === 401) {
-                        alert("Unauthorized: Session ID missing or invalid.");
-                    } else if (response.status === 403) {
-                        alert("Forbidden: You do not have access.");
-                    } else {
-                        alert("Error: " + response.status);
-                    }
+                    if (!response.ok) throw new Error("Access denied");
+                    return response.text();
                 })
-                .catch(error => {
-                    console.error("Fetch error:", error);
-                    alert("Network error.");
-                });
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(err => alert(err.message));
+        }
+        function openMainPage(){
+            const jwt = localStorage.getItem("token");
+            console.log(jwt)
+            if (!jwt) {
+                alert("Session ID not found. Please log in first.");
+                return;
+            }
+
+            fetch("http://localhost:8080/main.html", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + jwt
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Access denied");
+                    return response.text();
+                })
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(err => alert(err.message));
+
+        }
+        function openSwaggerPage(){
+            const jwt = sessionStorage.getItem("token");
+            console.log(jwt)
+            if (!jwt) {
+                alert("Session ID not found. Please log in first.");
+                return;
+            }
+
+            fetch("http://localhost:8080//swagger-ui.html", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + jwt
+                }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Access denied");
+                    return response.text();
+                })
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
+                })
+                .catch(err => alert(err.message));
 
         }
     </script>
@@ -238,10 +284,10 @@
     </div>
 
     <div class="btn-container">
-        <button class="index-btn" onclick="location.href='main.html'">Main page</button>
+        <button class="index-btn" onclick="openMainPage()">Main page</button>
 
-        <button class="index-btn" onclick="openAdminPage()">🛠 Admin Page</button>
-        <a href="http://localhost:8080/swagger-ui.html" class="index-btn">📘 Open Swagger UI</a>
+        <button class="index-btn" onclick="openAdminPage()"> Admin Page</button>
+        <button  class="index-btn" onclick="openSwaggerPage()">Open Swagger UI</button>
     </div>
 
 </div>

@@ -9,14 +9,30 @@
 </head>
 <body>
 <div id="header-placeholder"></div>
-<div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Поиск фильма по названию..." />
-    <button id="searchBtn">Поиск</button>
+<div class="page-layout">
+    <aside class="sidebar">
+        <h3>Фильтр по статусу</h3>
+        <label><input type="radio" name="statusFilter" value="ALL" checked> Все</label><br>
+        <label><input type="radio" name="statusFilter" value="PENDING"> Ожидают</label><br>
+        <label><input type="radio" name="statusFilter" value="APPROVED"> Одобрены</label><br>
+        <label><input type="radio" name="statusFilter" value="REJECTED"> Отклонены</label><br>
+    </aside>
+
+    <main class="content">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Поиск по названию...">
+            <button id="searchBtn">Поиск</button>
+        </div>
+
+        <div id="moviesContainer"></div>
+        <div id="pagination" class="pagination"></div>
+
+    </main>
 </div>
 
-<div class="movie-list" id="moviesContainer"></div>
 
-
+    </main>
+</div>
 
 <script type="module" src="js/admin.js"></script>
 <script src="/js/adminHeader.js"></script>

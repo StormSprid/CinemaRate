@@ -1,107 +1,169 @@
-import { performMigration } from './migrate.js';
+    import { performMigration } from './migrate.js';
 
-// Загрузка всех фильмов при открытии страницы
-function loadAllMovies() {
-    fetch("/movie/all")
-        .then(response => response.json())
-        .then(movies => {
-            const container = document.getElementById("moviesContainer");
-            container.innerHTML = "";
 
-            if (movies.length === 0) {
-                container.innerHTML = "<p>Нет фильмов в базе.</p>";
-                return;
-            }
+    // Загрузка header
+    function loadHeader() {
+        fetch('/fragments/adminHeader.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header-placeholder').innerHTML = html;
 
-            movies.forEach(movie => {
-                const div = document.createElement("div");
-                div.className = "movie-card";
-                div.innerHTML = `
+                document.getElementById("migrateBtn")?.addEventListener("click", () => {
+                    console.log("Нажата кнопка миграции");
+                    performMigration(
+                        () => alert("Миграция завершена!"),
+                        () => alert("Ошибка миграции!")
+                    );
+                });
+
+                // Инициализация логики ПОСЛЕ полной загрузки всех элементов
+                setupSearch();
+                setupStatusFilter();
+
+                // Загружаем фильмы ТОЛЬКО после отрисовки фильтров и поиска
+                const selectedStatus = document.querySelector('input[name="statusFilter"]:checked')?.value || "ALL";
+                const searchQuery = document.getElementById("searchInput")?.value.trim() || "";
+                loadMoviesWithFilter(selectedStatus, searchQuery);
+            })
+            .catch(error => {
+                console.error('Не удалось загрузить header:', error);
+            });
+    }
+
+    let currentPage = 0;
+    const pageSize = 6;
+    let totalPages = 1;
+    const jwt = localStorage.getItem("token");
+
+    function loadMoviesWithFilter(status = "ALL", title = "", page = 0) {
+        let url = "";
+
+        if (title && title.length > 0) {
+            const params = new URLSearchParams();
+            params.append("title", title);
+            url = `/movie/search?${params.toString()}`;
+        } else {
+            const params = new URLSearchParams();
+            if (status !== "ALL") params.append("status", status);
+            params.append("page", page);
+            params.append("size", pageSize);
+            url = `/movie/filter?${params.toString()}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById("moviesContainer");
+                container.innerHTML = "";
+
+                const movies = Array.isArray(data.content) ? data.content : (Array.isArray(data) ? data : []);
+
+                if (movies.length === 0) {
+                    container.innerHTML = "<p>Фильмы не найдены 😢</p>";
+                    return;
+                }
+
+                movies.forEach(movie => {
+                    const div = document.createElement("div");
+                    div.className = "movie-card";
+                    div.innerHTML = `
                     <h2 class="movie-title">
                         <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
                     </h2>
                     <div class="movie-year">${movie.year}</div>
                     <div class="movie-description">${movie.description}</div>
                 `;
-                container.appendChild(div);
-            });
-        })
-        .catch(error => {
-            const container = document.getElementById("moviesContainer");
-            container.innerHTML = "<p>Ошибка загрузки данных 😢</p>";
-            console.error("Ошибка:", error);
-        });
-}
-
-// Загрузка header
-function loadHeader() {
-    fetch('/fragments/adminHeader.html')
-        .then(response => response.text())
-        .then(html => {
-            document.getElementById('header-placeholder').innerHTML = html;
-            document.getElementById("migrateBtn").addEventListener("click", () => {
-                console.log("Нажата кнопка миграции");
-                performMigration(
-                    () => alert("Миграция завершена!"),
-                    () => alert("Ошибка миграции!")
-                );
-            });
-        })
-        .catch(error => {
-            console.error('Не удалось загрузить header:', error);
-        });
-}
-
-// Поиск фильмов
-function setupSearch() {
-    const searchBtn = document.getElementById("searchBtn");
-    const searchInput = document.getElementById("searchInput");
-
-    searchBtn.addEventListener("click", () => {
-        const query = searchInput.value.trim();
-
-        if (query === "") {
-            loadAllMovies(); // Показать все фильмы
-        } else {
-            fetch(`/movie/search?title=${encodeURIComponent(query)}`)
-                .then(res => {
-                    if (!res.ok) throw new Error("Ошибка поиска");
-                    return res.json();
-                })
-                .then(movies => {
-                    const container = document.getElementById("moviesContainer");
-                    container.innerHTML = "";
-
-                    if (movies.length === 0) {
-                        container.innerHTML = "<p>Фильмы не найдены 😢</p>";
-                        return;
-                    }
-
-                    movies.forEach(movie => {
-                        const div = document.createElement("div");
-                        div.className = "movie-card";
-                        div.innerHTML = `
-                            <h2 class="movie-title">
-                                <a href="adminMovie.html?id=${movie.id}">${movie.title}</a>
-                            </h2>
-                            <div class="movie-year">${movie.year}</div>
-                            <div class="movie-description">${movie.description}</div>
-                        `;
-                        container.appendChild(div);
-                    });
-                })
-                .catch(err => {
-                    console.error("Ошибка поиска:", err);
-                    document.getElementById("moviesContainer").innerHTML = "<p>Фильмы не найдены 😢</p>";
+                    container.appendChild(div);
                 });
+
+                // пагинация
+                totalPages = data.totalPages;
+                currentPage = data.number;
+
+                updatePagination(status, title);
+            })
+            .catch(error => {
+                console.error("Ошибка загрузки фильмов:", error);
+                document.getElementById("moviesContainer").innerHTML = "<p>Ошибка загрузки данных 😢</p>";
+            });
+    }
+    function openAdminMovie(movieId) {
+        const jwt = localStorage.getItem("token"); // или sessionStorage, как ты используешь
+
+        // Проверка токена
+        if (!jwt || jwt.split(".").length !== 3) {
+            alert("Нужно войти как администратор");
+            window.location.href = "/login.html";
+            return;
         }
+
+        fetch(`/adminMovie.html?id=${movieId}`, {
+            method: "GET",
+            headers: { "Authorization": "Bearer " + jwt }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Нет доступа");
+                return response.text();
+            })
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+    }
+
+    function updatePagination(status, title) {
+        const pagination = document.getElementById("pagination");
+        pagination.innerHTML = `
+        <button id="prevPage" ${currentPage === 0 ? "disabled" : ""}>Предыдущая</button>
+        <span>Страница ${currentPage + 1} из ${totalPages}</span>
+        <button id="nextPage" ${currentPage + 1 >= totalPages ? "disabled" : ""}>Следующая</button>
+    `;
+
+        document.getElementById("prevPage").addEventListener("click", () => {
+            if (currentPage > 0) {
+                loadMoviesWithFilter(status, title, currentPage - 1);
+            }
+        });
+
+        document.getElementById("nextPage").addEventListener("click", () => {
+            if (currentPage + 1 < totalPages) {
+                loadMoviesWithFilter(status, title, currentPage + 1);
+            }
+        });
+    }
+
+
+    function setupSearch() {
+        const searchBtn = document.getElementById("searchBtn");
+        const searchInput = document.getElementById("searchInput");
+
+        searchBtn.addEventListener("click", () => {
+            const query = searchInput.value.trim();
+            const selectedStatus = document.querySelector('input[name="statusFilter"]:checked').value;
+            loadMoviesWithFilter(selectedStatus, query);
+        });
+    }
+    function setupStatusFilter() {
+        const radios = document.querySelectorAll('input[name="statusFilter"]');
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                const statusRadio = document.querySelector('input[name="statusFilter"]:checked');
+                const selectedStatus = statusRadio ? statusRadio.value : "ALL";
+                const query = document.getElementById("searchInput").value.trim();
+                loadMoviesWithFilter(selectedStatus, query);
+            });
+        });
+    }
+
+
+    // Инициализация при загрузке страницы
+    document.addEventListener("DOMContentLoaded", () => {
+
+        loadHeader();           // теперь внутри loadHeader вызовется setupSearch()
     });
-}
 
-// Инициализация при загрузке страницы
-document.addEventListener("DOMContentLoaded", () => {
-    loadAllMovies();
-    loadHeader();
-    setupSearch();
 
-});

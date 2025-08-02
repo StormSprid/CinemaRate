@@ -20,7 +20,7 @@ public class UserConverter {
 
         );
     }
-    public UserDTO toDto(Optional<UserEntity> u){
+    public static UserDTO toDto(Optional<UserEntity> u){
         if(u.isPresent()) {
             var user =  u.get();
             UserDTO dto = new UserDTO();

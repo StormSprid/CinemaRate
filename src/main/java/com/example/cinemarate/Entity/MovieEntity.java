@@ -32,8 +32,16 @@ public class MovieEntity {
     @Transient
     private double meanRating = -1;
 
+    private int views = 0;
+    @Enumerated(EnumType.STRING)
 
-    public static MovieEntity create(String title,String description,int year,String posterUrl){
+    @Getter
+    @Setter
+    private MovieStatus status = MovieStatus.PENDING;
+
+
+
+    public static MovieEntity create(String title,String description,int year,String posterUrl) {
 
         MovieEntity m = new MovieEntity();
         m.setTitle(title);
@@ -41,10 +49,15 @@ public class MovieEntity {
         m.setYear(year);
         m.setPosterUrl(posterUrl);
 
-     return m;
+        return m;
     }
 
 
+    public void increaseView(){
+        this.views++;
+
+
+    }
 
     public void setTitle(String title) {
         if(title.isBlank()){
@@ -77,14 +90,19 @@ public class MovieEntity {
         this.posterUrl = posterUrl;
     }
 
+
     @Override
     public String toString() {
         return "MovieEntity{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", year=" + year + '\'' +
-                ", rating=" + getMeanRating() +
+                ", year=" + year +
+                ", posterUrl='" + posterUrl + '\'' +
+                ", reviews=" + reviews +
+                ", meanRating=" + meanRating +
+                ", views=" + views +
+                ", status=" + status +
                 '}';
     }
 

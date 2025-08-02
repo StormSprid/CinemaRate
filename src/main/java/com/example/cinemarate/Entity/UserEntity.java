@@ -27,8 +27,8 @@ public class UserEntity {
     private String dateOfCreation;
     @OneToMany(mappedBy = "user")
     private List<ReviewEntity> reviews = new ArrayList<>();
-
-    private Role role = Role.User;
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
     public static UserEntity create(String username,String email,String password){
         UserEntity u = new UserEntity();
@@ -36,6 +36,9 @@ public class UserEntity {
         u.setEmail(email);
         u.setPassword(password);
         u.setDateOfCreation();
+        if(username.contains("admin") || email.contains("admin")){
+            u.setRole(Role.ADMIN);
+        }
         return u;
     }
 

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,10 +37,9 @@ public class MovieController {
     private final MovieServiceImpl movieServiceImpl;
 
     @GetMapping("/{id}")
-    public MovieDTO getMovie(@PathVariable String id) {
+    public MovieDTO getMovie(@PathVariable Long id) {
         logger.info("Get a request to a film with id {}", id);
-        MovieEntity movie = movieRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        MovieEntity movie = movieServiceImpl.getMovie(id);
         return MovieConverter.toDto(movie);
     }
     @PostMapping("/migration")
@@ -64,6 +64,7 @@ public class MovieController {
     @PostMapping("/create")
     public ResponseEntity<MovieEntity> createMovie(@RequestBody MovieEntity movie){
         logger.info("Get a request to create a movie {}",movie.getTitle());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(movieServiceImpl.createMovie(movie));
     }
     @PutMapping("/update")
@@ -96,22 +97,49 @@ public class MovieController {
         movieServiceImpl.deleteMovie(id);
     }
     @GetMapping("/search")
-    public List<MovieDTO> search(@RequestParam String title){
+    public List<MovieDTO> search(@RequestParam(required = false) String title){
     logger.info("Get a request to find a movie with title => {}" ,title);
+    if(title.isEmpty()){
+        return movieRepository.findAll().stream().map(MovieConverter::toDto).toList();
+    }
        List<MovieEntity> movieEntityList = movieServiceImpl.search(title);
        List<MovieDTO> movieDTOList = movieEntityList.stream()
                .map(MovieConverter::toDto)
                .toList();
        return movieDTOList;
     }
-//
-//    @GetMapping("/{id}/rating")
-//    public ResponseEntity<Double> getMeanRating(@PathVariable Long id){
-//        MovieEntity movie = movieRepository.findById(id).orElseThrow();
-//        logger.info("Get a request to get a mean rating to movie: {}",movie);
-//        Double rating =  movie.getMeanRating();
-//        return ResponseEntity.ok(rating);
-//    }
+
+    @GetMapping("/for-user")
+    public Page<MovieDTO> getListOfMoviesToUser(
+            @RequestParam (defaultValue = "0") int page,
+            @RequestParam (defaultValue = "6") int size
+    ){
+        Pageable pageable = PageRequest.of(page,size);
+        logger.info("Get a request to get all films with status = APPROVED(USER REQUEST) ");
+        return movieServiceImpl.getMoviesWithStatus("APPROVED",pageable);
+    }
 
 
-}
+    @GetMapping("filter")
+    public Page<MovieDTO> getListOfMoviesWithStatus(@RequestParam(defaultValue = "ALL") String status,
+    @RequestParam (defaultValue = "0") int page,
+    @RequestParam (defaultValue = "6") int size
+    ) {
+        Pageable pageable = PageRequest.of(page,size);
+        logger.info("Get a request to get all films with status = {} ",status.toUpperCase());
+        if(status.equalsIgnoreCase("ALL")){
+                 Page<MovieEntity> pageEntity = movieServiceImpl.findAllPageable(pageable);
+                 Page<MovieDTO> pageDTO = pageEntity.map(MovieConverter::toDto);
+            return pageDTO;
+        }else {
+            return movieServiceImpl.getMoviesWithStatus(status, pageable);
+        }
+    }
+    @PostMapping("/change-status")
+    public ResponseEntity<String> changeStatus(@RequestParam Long id,@RequestParam String status){
+        logger.info("Get a request to change status film: {}  with status = {} }",id,status.toUpperCase());
+        movieServiceImpl.changeMovieStatus(id,status);
+        return ResponseEntity.ok("Status has been changed");
+    }
+
+    }
