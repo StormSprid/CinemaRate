@@ -89,8 +89,10 @@
 </div>
 
 <script>
+
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get("id");
+    const jwt = localStorage.getItem("token");
 
     const deleteButton = document.getElementById('deleteButton');
     deleteButton.style.display = movieId ? 'inline-block' : 'none';
@@ -98,7 +100,10 @@
     if (!movieId) {
         document.getElementById("title").textContent = "ID фильма не указан в URL";
     } else {
-        fetch(`/movie/${movieId}`)
+        fetch(`/movie/${movieId}`, {
+            method: "GET",
+            headers: { "Authorization": "Bearer " + jwt }
+        })
             .then(response => {
                 if (!response.ok) throw new Error("Фильм не найден");
                 return response.json();
@@ -115,7 +120,8 @@
                     const newStatus = document.getElementById("statusSelect").value;
 
                     fetch(`/movie/change-status?id=${movieId}&status=${newStatus}`, {
-                        method: "POST"
+                        method: "POST",
+                        headers: { "Authorization": "Bearer " + jwt }
                     })
                         .then(response => {
                             if (!response.ok) throw new Error("Ошибка при обновлении статуса");
@@ -161,7 +167,9 @@
                     deleteBtn.addEventListener("click", () => {
                         if (confirm("Удалить этот отзыв?")) {
                             fetch(`/review/delete/${review.id}`, {
-                                method: "DELETE"
+                                method: "DELETE",
+                                headers: { "Authorization": "Bearer " + jwt }
+
                             })
                                 .then(response => {
                                     if (response.ok) {
@@ -189,7 +197,8 @@
 
     deleteButton.addEventListener('click', () => {
         if (confirm("Вы действительно хотите удалить этот фильм?")) {
-            fetch(`/movie?id=${movieId}`, { method: 'DELETE' })
+            fetch(`/movie?id=${movieId}`, {
+                method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
                         alert('Фильм успешно удален!');

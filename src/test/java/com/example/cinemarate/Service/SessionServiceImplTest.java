@@ -1,7 +1,6 @@
 package com.example.cinemarate.Service;
 
-import com.example.cinemarate.Repository.SessionRepository;
-import com.example.cinemarate.ServiceImpl.SessionServiceImpl;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,8 +13,7 @@ import static org.mockito.Mockito.*;
 
 public class SessionServiceImplTest {
 
-    private SessionRepository sessionRepository;
-    private SessionService sessionService;
+
 
     @BeforeEach
     void setUp() {

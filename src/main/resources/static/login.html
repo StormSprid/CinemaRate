@@ -91,7 +91,7 @@
                     throw new Error("Сервер не вернул sessionId");
                 }
 
-                sessionStorage.setItem("token", data.jwt);
+                localStorage.setItem("token", data.jwt);
                 document.getElementById("message").innerHTML = `
         ✅ Вход выполнен успешно!<br>
         <strong>jwt :</strong> ${data.jwt}

@@ -61,11 +61,12 @@ public class SecurityConfigurator {
                         "/",
                         "auth/**","/index.html","/css/**",
                         "/js/**","/images/**","/favicon.ico",
-                        "/login.html","/register.html","403.html"
+                        "/login.html","/register.html","403.html","movie.html",
+                        "/adminMovie.html"
 
                 ).permitAll()
-                .requestMatchers("/admin.html","/adminMovie.html","/swagger-ui/**").hasRole("ADMIN")
-                .requestMatchers("/main.html").fullyAuthenticated()
+                .requestMatchers("/admin.html","/swagger-ui/**").hasRole("ADMIN")
+                .requestMatchers("/main.html","/review/**").fullyAuthenticated()
                 .anyRequest().permitAll()
         )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

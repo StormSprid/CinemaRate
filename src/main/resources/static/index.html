@@ -110,7 +110,7 @@
             setInterval(fillStarsInOrder, 1500);
         });
         function openAdminPage() {
-            const jwt = sessionStorage.getItem("token");
+            const jwt = localStorage.getItem("token");
             console.log(jwt)
             if (!jwt) {
                 alert("Session ID not found. Please log in first.");
@@ -135,7 +135,7 @@
                 .catch(err => alert(err.message));
         }
         function openMainPage(){
-            const jwt = sessionStorage.getItem("token");
+            const jwt = localStorage.getItem("token");
             console.log(jwt)
             if (!jwt) {
                 alert("Session ID not found. Please log in first.");

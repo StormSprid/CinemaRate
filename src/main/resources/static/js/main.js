@@ -35,18 +35,43 @@ function renderPage(movies) {
         const div = document.createElement("div");
         div.className = "movie-card";
         div.innerHTML = `
-            <h2 class="movie-title">
-                <a href="movie.html?id=${movie.id}">${movie.title}</a>
-                <span class="movie-rating">⭐ ${movie.meanRating ?? '–'}</span>
-            </h2>
-            <div class="movie-year">Год: ${movie.year}</div>
-            <div class="movie-description">${movie.description}</div>
-            <div class="movie-views">👁️: ${movie.views ?? 0}</div>
-        `;
+        <h2 class="movie-title">
+            <span class="movie-link" style="cursor:pointer; color:blue; text-decoration:underline;"
+                  onclick="loadMoviePage(${movie.id})">
+                ${movie.title}
+            </span>
+            <span class="movie-rating">⭐ ${movie.meanRating ?? '–'}</span>
+        </h2>
+        <div class="movie-year">Год: ${movie.year}</div>
+        <div class="movie-description">${movie.description}</div>
+        <div class="movie-views">👁️: ${movie.views ?? 0}</div>
+    `;
         container.appendChild(div);
     });
-}
 
+}
+function loadMoviePage(movieId) {
+    const jwt = localStorage.getItem("token");
+
+    fetch(`/movie/${movieId}`, {
+        method: 'GET',
+        headers: jwt ? { "Authorization": "Bearer " + jwt } : {}
+    })
+        .then(response => {
+            if (!response.ok) throw new Error("Ошибка загрузки фильма");
+            return response.json();
+        })
+        .then(data => {
+
+            window.location.href = `movie.html?id=${movieId}`;
+
+
+
+        })
+        .catch(err => {
+            console.error("Ошибка:", err);
+        });
+}
 
 function setupPagination() {
     document.getElementById("prevBtn").addEventListener("click", () => {

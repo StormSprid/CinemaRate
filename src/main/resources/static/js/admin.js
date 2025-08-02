@@ -33,6 +33,7 @@
     let currentPage = 0;
     const pageSize = 6;
     let totalPages = 1;
+    const jwt = localStorage.getItem("token");
 
     function loadMoviesWithFilter(status = "ALL", title = "", page = 0) {
         let url = "";
@@ -86,6 +87,34 @@
                 document.getElementById("moviesContainer").innerHTML = "<p>Ошибка загрузки данных 😢</p>";
             });
     }
+    function openAdminMovie(movieId) {
+        const jwt = localStorage.getItem("token"); // или sessionStorage, как ты используешь
+
+        // Проверка токена
+        if (!jwt || jwt.split(".").length !== 3) {
+            alert("Нужно войти как администратор");
+            window.location.href = "/login.html";
+            return;
+        }
+
+        fetch(`/adminMovie.html?id=${movieId}`, {
+            method: "GET",
+            headers: { "Authorization": "Bearer " + jwt }
+        })
+            .then(response => {
+                if (!response.ok) throw new Error("Нет доступа");
+                return response.text();
+            })
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch(err => {
+                alert(err.message);
+            });
+    }
+
     function updatePagination(status, title) {
         const pagination = document.getElementById("pagination");
         pagination.innerHTML = `
